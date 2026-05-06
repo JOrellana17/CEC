@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Create Booking')
+@section('title', 'Crear reserva')
 
 @section('content')
 <div class="card border-0 shadow-sm"><div class="card-body">

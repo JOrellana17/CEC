@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Reports')
+@section('title', 'Reportes')
 
 @section('content')
 @include('backend.reports._filters')
@@ -8,32 +8,32 @@
 <div class="row g-3 mb-4">
     <div class="col-12 col-md-4">
         <div class="metric-card">
-            <span>Occupancy rate</span>
+            <span>Tasa de ocupación</span>
             <strong>{{ number_format($operational['occupancy_rate'], 2) }}%</strong>
-            <small>{{ $operational['available_rooms']->count() }} available rooms</small>
+            <small>{{ $operational['available_rooms']->count() }} habitaciones disponibles</small>
         </div>
     </div>
     <div class="col-12 col-md-4">
         <div class="metric-card">
-            <span>Total revenue</span>
+            <span>Ingresos totales</span>
             <strong>{{ config('app.currency_symbol', '$') }}{{ number_format($financial['total_revenue'], 2) }}</strong>
-            <small>{{ $financial['payment_methods']->count() }} payment methods</small>
+            <small>{{ $financial['payment_methods']->count() }} métodos de pago</small>
         </div>
     </div>
     <div class="col-12 col-md-4">
         <div class="metric-card">
-            <span>Cancellations</span>
+            <span>Cancelaciones</span>
             <strong>{{ $statistical['total_cancellations'] }}</strong>
-            <small>{{ $statistical['peak_seasons']->first()['month'] ?? 'No peak season yet' }}</small>
+            <small>{{ $statistical['peak_seasons']->first()['month'] ?? 'Aún no hay temporada alta' }}</small>
         </div>
     </div>
 </div>
 
 <div class="row g-3">
     @foreach([
-        ['operational', 'Operational', 'Occupancy, available rooms, active reservations', 'bi-building-check'],
-        ['financial', 'Financial', 'Daily/monthly revenue, payment methods, balances', 'bi-currency-dollar'],
-        ['statistical', 'Statistical', 'Frequent guests, peak seasons, cancellation trends', 'bi-bar-chart-line'],
+        ['operational', 'Operativo', 'Ocupación, habitaciones disponibles, reservaciones activas', 'bi-building-check'],
+        ['financial', 'Financiero', 'Ingresos diarios/mensuales, métodos de pago y saldos', 'bi-currency-dollar'],
+        ['statistical', 'Estadístico', 'Huéspedes frecuentes, temporadas altas y tendencias de cancelación', 'bi-bar-chart-line'],
     ] as [$type, $label, $description, $icon])
         <div class="col-12 col-lg-4">
             <div class="card report-card h-100 border-0 shadow-sm">

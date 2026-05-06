@@ -1,23 +1,23 @@
 @extends('layouts.backend')
 
-@section('title', 'Reservation Details')
+@section('title', 'Detalles de la reservación')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.reservations.index') }}">Reservations</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.reservations.index') }}">Reservaciones</a></li>
 <li class="breadcrumb-item active">{{ $reservation->guest->full_name }}</li>
 @endsection
 
 @section('content')
 <div class="row">
-    <!-- Reservation Details -->
+    <!-- Reservation Detalles -->
     <div class="col-md-8">
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-calendar-check me-2"></i>
-                        Reservation for {{ $reservation->guest->full_name }}
+                        Reservación para {{ $reservation->guest->full_name }}
                     </h5>
                     <span class="badge bg-{{
                         $reservation->status === 'pending' ? 'warning' :
@@ -32,7 +32,7 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Guest:</strong><br>
+                        <strong>Huésped:</strong><br>
                         <a href="{{ route('backend.guests.show', $reservation->guest) }}" class="text-decoration-none">
                             {{ $reservation->guest->full_name }}
                         </a>
@@ -42,11 +42,11 @@
                         @endif
                     </div>
                     <div class="col-md-6">
-                        <strong>Room:</strong><br>
+                        <strong>Habitación:</strong><br>
                         <a href="{{ route('backend.rooms.show', $reservation->room) }}" class="text-decoration-none">
                             {{ $reservation->room->room_number }} - {{ $reservation->room->roomType->name }}
                         </a>
-                        <br><small class="text-muted">{{ $reservation->room->floor->name }}</small>
+                        <br><small class="text-muted">{{ $reservation->room->floorLevel->name }}</small>
                     </div>
                 </div>
 
@@ -65,7 +65,7 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Number of Guests:</strong><br>
+                        <strong>Número de huéspedes:</strong><br>
                         {{ $reservation->guests_count }}
                     </div>
                     <div class="col-md-6">
@@ -77,11 +77,11 @@
                 @if($reservation->status === 'confirmed' || $reservation->status === 'checked_in' || $reservation->status === 'checked_out')
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <strong>Room Rate:</strong><br>
+                            <strong>Tarifa de habitación:</strong><br>
                             ${{ number_format($reservation->room->price_per_night, 2) }} per night
                         </div>
                         <div class="col-md-6">
-                            <strong>Estimated Total:</strong><br>
+                            <strong>Total estimado:</strong><br>
                             <span class="h5 text-success">
                                 ${{ number_format($reservation->check_in->diffInDays($reservation->check_out) * $reservation->room->price_per_night, 2) }}
                             </span>
@@ -104,7 +104,7 @@
         @if($reservation->services->count() > 0)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h6 class="card-title"><i class="fas fa-concierge-bell me-2"></i>Additional Services</h6>
+                    <h6 class="card-title"><i class="fas fa-concierge-bell me-2"></i>Additional Servicios</h6>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
@@ -112,7 +112,7 @@
                             <tr>
                                 <th>Service</th>
                                 <th>Quantity</th>
-                                <th>Price</th>
+                                <th>Precio</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -127,7 +127,7 @@
                                         <form method="POST" action="{{ route('backend.reservations.services.destroy', $service) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this service?')">
+                                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Quitar este servicio?')">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -149,7 +149,7 @@
                     @csrf
                     <div class="col-md-5">
                         <select name="service_id" class="form-select" required>
-                            <option value="">Select service</option>
+                            <option value="">Seleccione un servicio</option>
                             @foreach(\App\Models\Service::active()->orderBy('category')->orderBy('name')->get() as $service)
                             <option value="{{ $service->id }}">{{ ucfirst($service->category) }} - {{ $service->name }} (${{ number_format((float) $service->price, 2) }})</option>
                             @endforeach
@@ -165,7 +165,7 @@
                         <button class="btn btn-primary w-100">Add</button>
                     </div>
                     <div class="col-12">
-                        <input type="text" name="notes" class="form-control" placeholder="Notes">
+                        <input type="text" name="notes" class="form-control" placeholder="Notas">
                     </div>
                 </form>
             </div>
@@ -175,15 +175,15 @@
         @if($reservation->invoice)
             <div class="card">
                 <div class="card-header">
-                    <h6 class="card-title"><i class="fas fa-file-invoice-dollar me-2"></i>Invoice</h6>
+                    <h6 class="card-title"><i class="fas fa-file-invoice-dollar me-2"></i>Factura</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <strong>Invoice #:</strong> {{ $reservation->invoice->invoice_number }}
+                            <strong>Factura #:</strong> {{ $reservation->invoice->invoice_number }}
                         </div>
                         <div class="col-md-6">
-                            <strong>Status:</strong>
+                            <strong>Estado:</strong>
                             <span class="badge bg-{{
                                 $reservation->invoice->status === 'paid' ? 'success' :
                                 ($reservation->invoice->status === 'pending' ? 'warning' : 'danger')
@@ -194,15 +194,15 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <strong>Total Amount:</strong> ${{ number_format($reservation->invoice->total_amount, 2) }}
+                            <strong>Monto total:</strong> ${{ number_format($reservation->invoice->total_amount, 2) }}
                         </div>
                         <div class="col-md-6">
-                            <strong>Paid Amount:</strong> ${{ number_format($reservation->invoice->paid_amount, 2) }}
+                            <strong>Monto pagado:</strong> ${{ number_format($reservation->invoice->paid_amount, 2) }}
                         </div>
                     </div>
                     <div class="mt-3">
                         <a href="{{ route('backend.invoices.show', $reservation->invoice) }}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-eye me-2"></i>View Invoice
+                            <i class="fas fa-eye me-2"></i>Ver factura
                         </a>
                     </div>
                 </div>
@@ -215,16 +215,16 @@
         <!-- Actions -->
         <div class="card mb-4">
             <div class="card-header">
-                <h6 class="card-title"><i class="fas fa-cogs me-2"></i>Actions</h6>
+                <h6 class="card-title"><i class="fas fa-cogs me-2"></i>Acciones</h6>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="{{ route('backend.reservations.edit', $reservation) }}" class="btn btn-primary">
-                        <i class="fas fa-edit me-2"></i>Edit Reservation
+                        <i class="fas fa-edit me-2"></i>Editarar reservación
                     </a>
                     @if(!$reservation->invoice)
                     <a href="{{ route('backend.invoices.create', ['reservation_id' => $reservation->id]) }}" class="btn btn-outline-success">
-                        <i class="bi bi-receipt"></i> Generate Invoice
+                        <i class="bi bi-receipt"></i> Generar factura
                     </a>
                     @endif
 
@@ -232,8 +232,8 @@
                         <form method="POST" action="{{ route('backend.reservations.confirm', $reservation) }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="btn btn-success" onclick="return confirm('Confirm this reservation?')">
-                                <i class="fas fa-check me-2"></i>Confirm Reservation
+                            <button type="submit" class="btn btn-success" onclick="return confirm('¿Confirmar esta reservación?')">
+                                <i class="fas fa-check me-2"></i>Confirmar reservación
                             </button>
                         </form>
                     @endif
@@ -246,7 +246,7 @@
 
                     @if(!in_array($reservation->status, ['checked_in', 'checked_out']))
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                            <i class="fas fa-times me-2"></i>Cancel Reservation
+                            <i class="fas fa-times me-2"></i>Cancelarar reservación
                         </button>
                     @endif
                 </div>
@@ -263,7 +263,7 @@
                     <div class="timeline-item">
                         <div class="timeline-marker bg-primary"></div>
                         <div class="timeline-content">
-                            <div class="fw-bold">Reservation Created</div>
+                            <div class="fw-bold">Reservación creada</div>
                             <small class="text-muted">{{ $reservation->created_at->format('M d, Y H:i') }}</small>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
                         <div class="timeline-item">
                             <div class="timeline-marker bg-success"></div>
                             <div class="timeline-content">
-                                <div class="fw-bold">Status Changed to {{ ucfirst(str_replace('_', ' ', $reservation->status)) }}</div>
+                                <div class="fw-bold">Estado cambiado a {{ ucfirst(str_replace('_', ' ', $reservation->status)) }}</div>
                                 <small class="text-muted">{{ $reservation->updated_at->format('M d, Y H:i') }}</small>
                             </div>
                         </div>
@@ -282,7 +282,7 @@
                         <div class="timeline-item">
                             <div class="timeline-marker bg-info"></div>
                             <div class="timeline-content">
-                                <div class="fw-bold">Invoice Generated</div>
+                                <div class="fw-bold">Factura generada</div>
                                 <small class="text-muted">{{ $reservation->invoice->created_at->format('M d, Y H:i') }}</small>
                             </div>
                         </div>
@@ -298,34 +298,34 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <div class="text-muted small">Room Capacity</div>
-                    <div>{{ $reservation->room->capacity }} guests</div>
+                    <div class="text-muted small">Capacidad de habitación</div>
+                    <div>{{ $reservation->room->capacity }} incluidos / {{ $reservation->room->max_capacity ?? $reservation->room->capacity }} máximo</div>
                 </div>
                 <div class="mb-3">
-                    <div class="text-muted small">Room Features</div>
+                    <div class="text-muted small">Características de la habitación</div>
                     <div>
                         @if($reservation->room->is_smoking)
-                            <span class="badge bg-secondary me-1">Smoking</span>
+                            <span class="badge bg-secondary me-1">Fumadores</span>
                         @endif
                         @if($reservation->room->has_balcony)
-                            <span class="badge bg-secondary me-1">Balcony</span>
+                            <span class="badge bg-secondary me-1">Balcón</span>
                         @endif
                         @if(!$reservation->room->is_smoking && !$reservation->room->has_balcony)
-                            <span class="text-muted">No special features</span>
+                            <span class="text-muted">Sin características especiales</span>
                         @endif
                     </div>
                 </div>
                 <div>
-                    <div class="text-muted small">Guest Status</div>
+                    <div class="text-muted small">Estado del huésped</div>
                     <div>
                         @if($reservation->guest->is_vip)
                             <span class="badge bg-warning text-dark me-1">VIP</span>
                         @endif
                         @if($reservation->guest->is_frequent)
-                            <span class="badge bg-info me-1">Frequent</span>
+                            <span class="badge bg-info me-1">Frecuente</span>
                         @endif
                         @if($reservation->guest->is_blacklisted)
-                            <span class="badge bg-danger me-1">Blacklisted</span>
+                            <span class="badge bg-danger me-1">Lista negraed</span>
                         @endif
                         @if(!$reservation->guest->is_vip && !$reservation->guest->is_frequent && !$reservation->guest->is_blacklisted)
                             <span class="text-muted">Regular guest</span>
@@ -342,7 +342,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Cancel Reservation</h5>
+                <h5 class="modal-title">Cancelar reservación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ route('backend.reservations.cancel', $reservation) }}">
@@ -350,9 +350,9 @@
                 @method('PATCH')
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="cancel_reason" class="form-label">Reason for Cancellation (Optional)</label>
+                        <label for="cancel_reason" class="form-label">Motivo de cancelación (opcional)</label>
                         <textarea class="form-control" id="cancel_reason" name="cancel_reason" rows="3"
-                                  placeholder="Please provide a reason for cancelling this reservation..."></textarea>
+                                  placeholder="Ingrese un motivo para cancelar esta reservación..."></textarea>
                     </div>
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
@@ -361,7 +361,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Cancel Reservation</button>
+                    <button type="submit" class="btn btn-danger">Cancelar reservación</button>
                 </div>
             </form>
         </div>

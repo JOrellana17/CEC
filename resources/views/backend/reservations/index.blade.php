@@ -1,10 +1,10 @@
 @extends('layouts.backend')
 
-@section('title', 'Reservations')
+@section('title', 'Reservaciones')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item active">Reservations</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item active">Reservaciones</li>
 @endsection
 
 @section('content')
@@ -13,16 +13,16 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Reservations</h5>
+                    <h5 class="card-title mb-0">Reservaciones</h5>
                     <div>
                         <a href="{{ route('backend.reservations.calendar') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-calendar me-2"></i>Calendar View
+                            <i class="fas fa-calendar me-2"></i>Vista de calendario
                         </a>
                         <a href="{{ route('backend.icalendar.index') }}" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-calendar2-week"></i> iCalendar
                         </a>
                         <a href="{{ route('backend.reservations.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus me-2"></i>New Reservation
+                            <i class="fas fa-plus me-2"></i>Nueva reservación
                         </a>
                     </div>
                 </div>
@@ -32,20 +32,20 @@
             <div class="card-body border-bottom">
                 <form method="GET" class="row g-3">
                     <div class="col-md-2">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="status" class="form-label">Estado</label>
                         <select name="status" id="status" class="form-select">
-                            <option value="">All Status</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                            <option value="checked_in" {{ request('status') == 'checked_in' ? 'selected' : '' }}>Checked In</option>
-                            <option value="checked_out" {{ request('status') == 'checked_out' ? 'selected' : '' }}>Checked Out</option>
-                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="">Todos los estados</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                            <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmada</option>
+                            <option value="checked_in" {{ request('status') == 'checked_in' ? 'selected' : '' }}>Check-in realizado</option>
+                            <option value="checked_out" {{ request('status') == 'checked_out' ? 'selected' : '' }}>Check-out realizado</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelada</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="room_id" class="form-label">Room</label>
+                        <label for="room_id" class="form-label">Habitación</label>
                         <select name="room_id" id="room_id" class="form-select">
-                            <option value="">All Rooms</option>
+                            <option value="">All Habitaciones</option>
                             @foreach($rooms as $room)
                                 <option value="{{ $room->id }}" {{ request('room_id') == $room->id ? 'selected' : '' }}>
                                     {{ $room->room_number }} - {{ $room->roomType->name }}
@@ -54,9 +54,9 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="guest_id" class="form-label">Guest</label>
+                        <label for="guest_id" class="form-label">Huésped</label>
                         <select name="guest_id" id="guest_id" class="form-select">
-                            <option value="">All Guests</option>
+                            <option value="">All Huéspedes</option>
                             @foreach($guests as $guest)
                                 <option value="{{ $guest->id }}" {{ request('guest_id') == $guest->id ? 'selected' : '' }}>
                                     {{ $guest->full_name }}
@@ -65,12 +65,12 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="date_from" class="form-label">Check-in From</label>
+                        <label for="date_from" class="form-label">Check-in desde</label>
                         <input type="date" name="date_from" id="date_from" class="form-control"
                                value="{{ request('date_from') }}">
                     </div>
                     <div class="col-md-2">
-                        <label for="date_to" class="form-label">Check-in To</label>
+                        <label for="date_to" class="form-label">Check-in hasta</label>
                         <input type="date" name="date_to" id="date_to" class="form-control"
                                value="{{ request('date_to') }}">
                     </div>
@@ -87,13 +87,13 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Guest</th>
-                            <th>Room</th>
+                            <th>Huésped</th>
+                            <th>Habitación</th>
                             <th>Check-in</th>
                             <th>Check-out</th>
-                            <th>Guests</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Huéspedes</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,7 +129,7 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="{{ route('backend.reservations.show', $reservation) }}"
-                                           class="btn btn-sm btn-outline-info" title="View">
+                                           class="btn btn-sm btn-outline-info" title="Ver">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('backend.reservations.export_ics', $reservation) }}"
@@ -137,7 +137,7 @@
                                             <i class="bi bi-download"></i>
                                         </a>
                                         <a href="{{ route('backend.reservations.edit', $reservation) }}"
-                                           class="btn btn-sm btn-outline-warning" title="Edit">
+                                           class="btn btn-sm btn-outline-warning" title="Editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         @if($reservation->status === 'pending')
@@ -146,7 +146,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-sm btn-outline-success"
-                                                        title="Confirm" onclick="return confirm('Confirm this reservation?')">
+                                                        title="Confirmar" onclick="return confirm('¿Confirmar esta reservación?')">
                                                     <i class="fas fa-check"></i>
                                                 </button>
                                             </form>
@@ -157,7 +157,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                        title="Cancel" onclick="return confirm('Cancel this reservation?')">
+                                                        title="Cancelar" onclick="return confirm('¿Cancelar esta reservación?')">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </form>
@@ -170,9 +170,9 @@
                                 <td colspan="7" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="fas fa-calendar-times fa-2x mb-2"></i>
-                                        <p>No reservations found.</p>
+                                        <p>No se encontraron reservaciones.</p>
                                         <a href="{{ route('backend.reservations.create') }}" class="btn btn-primary btn-sm">
-                                            Create First Reservation
+                                            Crear primera reservación
                                         </a>
                                     </div>
                                 </td>

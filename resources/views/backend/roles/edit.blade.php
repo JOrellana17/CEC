@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Edit Role')
+@section('title', 'Editar rol')
 
 @section('content')
 <div class="card border-0 shadow-sm">

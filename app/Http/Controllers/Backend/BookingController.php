@@ -11,6 +11,7 @@ use App\Models\BookingActivity;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -90,12 +91,19 @@ class BookingController extends Controller
             return back()->with('error', 'Room is not available for selected dates.')->withInput();
         }
 
+        $guestCount = (int) $validated['adults'] + (int) ($validated['children'] ?? 0);
+        $maxCapacity = $room->max_capacity ?? $room->capacity;
+        if ($guestCount > $maxCapacity) {
+            return back()->with('error', "This lodging can only accommodate {$maxCapacity} guests.")->withInput();
+        }
+
         // Calculate totals
         $checkIn = Carbon::parse($validated['check_in_date']);
         $checkOut = Carbon::parse($validated['check_out_date']);
         $nights = $checkIn->diffInDays($checkOut);
         
-        $subtotal = $validated['room_rate'] * $nights;
+        $extraPersonTotal = $room->extraPersonChargeFor($guestCount) * $nights;
+        $subtotal = ($validated['room_rate'] * $nights) + $extraPersonTotal;
         $discount = 0;
         if (!empty($validated['discount_percentage'])) {
             $discount = $subtotal * ($validated['discount_percentage'] / 100);
@@ -138,7 +146,7 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
-        $booking->load(['guest', 'room.floor', 'room.roomType', 'bookingServices.service', 'invoice', 'payments', 'activities.user']);
+        $booking->load(['guest', 'room.floorLevel', 'room.roomType', 'bookingServices.service', 'invoice', 'payments', 'activities.user']);
         return view('backend.bookings.show', compact('booking'));
     }
 
@@ -183,12 +191,20 @@ class BookingController extends Controller
             'special_requests' => 'nullable|string',
         ]);
 
+        $room = Room::find($validated['room_id']);
+        $guestCount = (int) $validated['adults'] + (int) ($validated['children'] ?? 0);
+        $maxCapacity = $room->max_capacity ?? $room->capacity;
+        if ($guestCount > $maxCapacity) {
+            return back()->with('error', "This lodging can only accommodate {$maxCapacity} guests.")->withInput();
+        }
+
         // Calculate totals
         $checkIn = Carbon::parse($validated['check_in_date']);
         $checkOut = Carbon::parse($validated['check_out_date']);
         $nights = $checkIn->diffInDays($checkOut);
         
-        $subtotal = $validated['room_rate'] * $nights;
+        $extraPersonTotal = $room->extraPersonChargeFor($guestCount) * $nights;
+        $subtotal = ($validated['room_rate'] * $nights) + $extraPersonTotal;
         $discount = 0;
         if (!empty($validated['discount_percentage'])) {
             $discount = $subtotal * ($validated['discount_percentage'] / 100);
@@ -218,6 +234,36 @@ class BookingController extends Controller
 
         return redirect()->route('backend.bookings.show', $booking->id)
             ->with('success', 'Booking updated successfully.');
+    }
+
+    /**
+     * Remove the specified booking.
+     */
+    public function destroy(Booking $booking)
+    {
+        if (in_array($booking->booking_status, ['pending', 'confirmed', 'checked_in'])) {
+            return redirect()->route('backend.bookings.index')
+                ->with('error', 'Cannot delete an active booking. Please cancel or check it out first.');
+        }
+
+        if ($booking->invoice()->exists() || $booking->payments()->exists()) {
+            return redirect()->route('backend.bookings.index')
+                ->with('error', 'Cannot delete booking with invoices or payments.');
+        }
+
+        DB::transaction(function () use ($booking) {
+            BookingActivity::create([
+                'booking_id' => $booking->id,
+                'user_id' => Auth::id(),
+                'action' => 'deleted',
+                'description' => 'Booking deleted',
+            ]);
+
+            $booking->delete();
+        });
+
+        return redirect()->route('backend.bookings.index')
+            ->with('success', 'Booking deleted successfully.');
     }
 
     /**

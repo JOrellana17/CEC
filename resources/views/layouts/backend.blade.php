@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'SIGEH-PHP') }} - @yield('title', 'Dashboard')</title>
+    <title>{{ config('app.name', 'SIGEH-PHP') }} - @yield('title', 'Panel de Control')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -36,7 +36,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('backend.dashboard') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.dashboard') }}">
-                                <i class="bi bi-speedometer2"></i> Dashboard
+                                <i class="bi bi-speedometer2"></i> Panel de Control
                             </a>
                         </li>
 
@@ -44,7 +44,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/bookings*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.bookings.index') }}">
-                                <i class="bi bi-calendar-check"></i> Bookings
+                                <i class="bi bi-calendar-check"></i> Reservas
                             </a>
                         </li>
                         @endcan
@@ -53,7 +53,16 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/reservations*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.reservations.index') }}">
-                                <i class="bi bi-calendar-event"></i> Reservations
+                                <i class="bi bi-calendar-event"></i> Reservaciones
+                            </a>
+                        </li>
+                        @endcan
+
+                        @can('reservations.calendar')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('backend/icalendar*') ? 'active' : 'text-white' }}"
+                               href="{{ route('backend.icalendar.index') }}">
+                                <i class="bi bi-calendar2-week"></i> Calendario iCal
                             </a>
                         </li>
                         @endcan
@@ -62,7 +71,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/rooms*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.rooms.index') }}">
-                                <i class="bi bi-house-door"></i> Rooms
+                                <i class="bi bi-house-door"></i> Habitaciones
                             </a>
                         </li>
                         @endcan
@@ -71,7 +80,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/guests*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.guests.index') }}">
-                                <i class="bi bi-people"></i> Guests
+                                <i class="bi bi-people"></i> Huéspedes
                             </a>
                         </li>
                         @endcan
@@ -80,7 +89,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/invoices*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.invoices.index') }}">
-                                <i class="bi bi-receipt"></i> Invoices
+                                <i class="bi bi-receipt"></i> Facturas
                             </a>
                         </li>
                         @endcan
@@ -89,7 +98,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/payments*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.payments.index') }}">
-                                <i class="bi bi-cash"></i> Payments
+                                <i class="bi bi-cash"></i> Pagos
                             </a>
                         </li>
                         @endcan
@@ -98,7 +107,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/services*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.services.index') }}">
-                                <i class="bi bi-star"></i> Services
+                                <i class="bi bi-star"></i> Servicios
                             </a>
                         </li>
                         @endcan
@@ -107,7 +116,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/reports*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.reports.index') }}">
-                                <i class="bi bi-graph-up"></i> Reports
+                                <i class="bi bi-graph-up"></i> Reportes
                             </a>
                         </li>
                         @endcan
@@ -116,7 +125,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/audit-logs*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.audit.index') }}">
-                                <i class="bi bi-clipboard-data"></i> Audit Logs
+                                <i class="bi bi-clipboard-data"></i> Registros de Auditoría
                             </a>
                         </li>
                         @endcan
@@ -125,7 +134,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/users*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.users.index') }}">
-                                <i class="bi bi-person-gear"></i> Users
+                                <i class="bi bi-person-gear"></i> Usuarios
                             </a>
                         </li>
                         @endcan
@@ -143,7 +152,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/permissions*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.permissions.index') }}">
-                                <i class="bi bi-key"></i> Permissions
+                                <i class="bi bi-key"></i> Permisos
                             </a>
                         </li>
                         @endcan
@@ -152,7 +161,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('backend/settings*') ? 'active' : 'text-white' }}"
                                href="{{ route('backend.settings.index') }}">
-                                <i class="bi bi-gear"></i> Settings
+                                <i class="bi bi-gear"></i> Configuración
                             </a>
                         </li>
                         @endcan
@@ -164,7 +173,7 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <!-- Header -->
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">@yield('title', 'Dashboard')</h1>
+                    <h1 class="h2">@yield('title', 'Panel de Control')</h1>
 
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
@@ -179,11 +188,11 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ route('backend.users.profile') }}">
-                                    <i class="bi bi-person"></i> Profile
+                                    <i class="bi bi-person"></i> Perfil
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                                 </a></li>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                     @csrf

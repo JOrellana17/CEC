@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Payment Summary')
+@section('title', 'Resumen de pagos')
 
 @section('content')
 <div class="card shadow-sm">

@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Create Permission')
+@section('title', 'Crear permiso')
 
 @section('content')
 <div class="card border-0 shadow-sm"><div class="card-body">

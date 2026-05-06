@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Edit Floor')
+@section('title', 'Editar piso')
 
 @section('content')
 <div class="card border-0 shadow-sm"><div class="card-body">

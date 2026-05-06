@@ -27,7 +27,7 @@ class ICalendarService
         $calendar->{'X-WR-CALNAME'} = $name;
 
         foreach ($reservations as $reservation) {
-            $reservation->loadMissing(['guest', 'room.roomType', 'room.floor']);
+            $reservation->loadMissing(['guest', 'room.roomType', 'room.floorLevel']);
             $uid = $this->uidForReservation($reservation);
 
             $calendar->add('VEVENT', [
@@ -233,7 +233,7 @@ class ICalendarService
             "Phone: {$reservation->guest->phone}",
             "Room: {$reservation->room->room_number}",
             'Room Type: '.($reservation->room->roomType?->name ?? ''),
-            'Floor: '.($reservation->room->floor?->name ?? $reservation->room->floor?->number),
+            'Floor: '.($reservation->room->floorLevel?->name ?? $reservation->room->floorLevel?->number),
             "Guests: {$reservation->guests_count}",
             "Status: {$reservation->status}",
             "Notes: {$reservation->notes}",

@@ -3,14 +3,14 @@
 @section('title', $guest->full_name ?? "{$guest->first_name} {$guest->last_name}")
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.guests.index') }}">Guests</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.guests.index') }}">Huéspedes</a></li>
 <li class="breadcrumb-item active">{{ $guest->full_name ?? "{$guest->first_name} {$guest->last_name}" }}</li>
 @endsection
 
 @section('content')
 <div class="row">
-    <!-- Guest Information -->
+    <!-- Información del huésped -->
     <div class="col-md-8">
         <div class="card mb-4">
             <div class="card-header">
@@ -49,14 +49,14 @@
                         {{ $guest->city }}, {{ $guest->state }} {{ $guest->postal_code }}
                     </div>
                     <div class="col-md-6">
-                        <strong>Status:</strong><br>
+                        <strong>Estado:</strong><br>
                         @if ($guest->is_active)
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">Activo</span>
                         @else
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary">Inactivo</span>
                         @endif
                         @if ($guest->deleted_at)
-                            <span class="badge bg-danger">Soft Deleted</span>
+                            <span class="badge bg-danger">Soft Eliminard</span>
                         @endif
                     </div>
                 </div>
@@ -68,10 +68,10 @@
                             <span class="badge bg-warning text-dark"><i class="fas fa-star me-1"></i>VIP</span>
                         @endif
                         @if ($guest->is_frequent)
-                            <span class="badge bg-info"><i class="fas fa-heart me-1"></i>Frequent Guest</span>
+                            <span class="badge bg-info"><i class="fas fa-heart me-1"></i>Huésped frecuente</span>
                         @endif
                         @if ($guest->is_blacklisted)
-                            <span class="badge bg-danger"><i class="fas fa-ban me-1"></i>Blacklisted</span>
+                            <span class="badge bg-danger"><i class="fas fa-ban me-1"></i>Lista negraed</span>
                         @endif
                     </div>
                 </div>
@@ -92,22 +92,22 @@
             </div>
         </div>
 
-        <!-- Reservation History -->
+        <!-- Historial de reservaciones -->
         @if ($guest->bookings->count() > 0)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i>Reservation History</h5>
+                    <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i>Historial de reservaciones</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Room</th>
+                                <th>Habitación</th>
                                 <th>Check In</th>
                                 <th>Check Out</th>
-                                <th>Status</th>
+                                <th>Estado</th>
                                 <th>Total</th>
-                                <th>Actions</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,17 +137,17 @@
         @if ($guest->invoices->count() > 0)
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title"><i class="fas fa-receipt me-2"></i>Invoice History</h5>
+                    <h5 class="card-title"><i class="fas fa-receipt me-2"></i>Historial de facturas</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Invoice #</th>
-                                <th>Date</th>
+                                <th>Factura #</th>
+                                <th>Fecha</th>
                                 <th>Amount</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -180,19 +180,19 @@
         <!-- Statistics -->
         <div class="card mb-4">
             <div class="card-header">
-                <h6 class="card-title"><i class="fas fa-chart-bar me-2"></i>Statistics</h6>
+                <h6 class="card-title"><i class="fas fa-chart-bar me-2"></i>Estadísticas</h6>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <div class="text-muted small">Total Bookings</div>
+                    <div class="text-muted small">Total de reservas</div>
                     <div class="h4">{{ $guest->bookings->count() }}</div>
                 </div>
                 <div class="mb-3">
-                    <div class="text-muted small">Total Spent</div>
+                    <div class="text-muted small">Total gastado</div>
                     <div class="h4">${{ number_format($guest->bookings->sum('total_amount'), 2) }}</div>
                 </div>
                 <div class="mb-3">
-                    <div class="text-muted small">Total Invoiced</div>
+                    <div class="text-muted small">Total facturado</div>
                     <div class="h4">${{ number_format($guest->invoices->sum('total_amount'), 2) }}</div>
                 </div>
                 <div>
@@ -205,35 +205,35 @@
         <!-- Actions -->
         <div class="card">
             <div class="card-header">
-                <h6 class="card-title">Actions</h6>
+                <h6 class="card-title">Acciones</h6>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="{{ route('backend.guests.edit', $guest) }}" class="btn btn-primary">
-                        <i class="fas fa-edit me-2"></i>Edit
+                        <i class="fas fa-edit me-2"></i>Editar
                     </a>
-                    <form method="POST" action="{{ route('backend.guests.toggleStatus', $guest) }}" style="display: inline;">
+                    <form method="POST" action="{{ route('backend.guests.toggle_status', $guest) }}" style="display: inline;">
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="btn btn-warning w-100">
                             <i class="fas fa-toggle-{{ $guest->is_active ? 'on' : 'off' }} me-2"></i>
-                            {{ $guest->is_active ? 'Deactivate' : 'Activate' }}
+                            {{ $guest->is_active ? 'Desactivar' : 'Activar' }}
                         </button>
                     </form>
                     @if (!$guest->is_blacklisted)
-                        <form method="POST" action="{{ route('backend.guests.toggleBlacklist', $guest) }}" style="display: inline;">
+                        <form method="POST" action="{{ route('backend.guests.toggle_blacklist', $guest) }}" style="display: inline;">
                             @csrf
                             @method('PATCH')
                             <button type="submit" class="btn btn-danger w-100">
-                                <i class="fas fa-ban me-2"></i>Add to Blacklist
+                                <i class="fas fa-ban me-2"></i>Agregar a lista negra
                             </button>
                         </form>
                     @else
-                        <form method="POST" action="{{ route('backend.guests.toggleBlacklist', $guest) }}" style="display: inline;">
+                        <form method="POST" action="{{ route('backend.guests.toggle_blacklist', $guest) }}" style="display: inline;">
                             @csrf
                             @method('PATCH')
                             <button type="submit" class="btn btn-info w-100">
-                                <i class="fas fa-check me-2"></i>Remove from Blacklist
+                                <i class="fas fa-check me-2"></i>Quitar de lista negra
                             </button>
                         </form>
                     @endif

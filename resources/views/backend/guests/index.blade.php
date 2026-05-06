@@ -1,17 +1,17 @@
 @extends('layouts.backend')
 
-@section('title', 'Guest Management')
+@section('title', 'Gestión de huéspedes')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item active">Guests</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item active">Huéspedes</li>
 @endsection
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Guest Management</h2>
+    <h2>Gestión de huéspedes</h2>
     <a href="{{ route('backend.guests.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>Add Guest
+        <i class="fas fa-plus me-2"></i>Agregar huésped
     </a>
 </div>
 
@@ -35,13 +35,13 @@
     <div class="card-body">
         <form method="GET" action="{{ route('backend.guests.index') }}" class="row g-3">
             <div class="col-md-3">
-                <input type="text" name="search" class="form-control" placeholder="Search by name, email, phone, document..."
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nombre, correo, teléfono, documento..."
                     value="{{ request('search') }}">
             </div>
 
             <div class="col-md-2">
                 <select name="is_vip" class="form-select">
-                    <option value="">All - VIP Status</option>
+                    <option value="">All - VIP Estado</option>
                     <option value="1" {{ request('is_vip') == '1' ? 'selected' : '' }}>VIP</option>
                     <option value="0" {{ request('is_vip') == '0' ? 'selected' : '' }}>Regular</option>
                 </select>
@@ -49,17 +49,17 @@
 
             <div class="col-md-2">
                 <select name="is_frequent" class="form-select">
-                    <option value="">All - Frequent</option>
-                    <option value="1" {{ request('is_frequent') == '1' ? 'selected' : '' }}>Frequent</option>
-                    <option value="0" {{ request('is_frequent') == '0' ? 'selected' : '' }}>Not Frequent</option>
+                    <option value="">Todos - frecuentes</option>
+                    <option value="1" {{ request('is_frequent') == '1' ? 'selected' : '' }}>Frecuente</option>
+                    <option value="0" {{ request('is_frequent') == '0' ? 'selected' : '' }}>No frecuente</option>
                 </select>
             </div>
 
             <div class="col-md-2">
                 <select name="is_blacklisted" class="form-select">
-                    <option value="">All - Blacklist</option>
-                    <option value="1" {{ request('is_blacklisted') == '1' ? 'selected' : '' }}>Blacklisted</option>
-                    <option value="0" {{ request('is_blacklisted') == '0' ? 'selected' : '' }}>Not Blacklisted</option>
+                    <option value="">All - Lista negra</option>
+                    <option value="1" {{ request('is_blacklisted') == '1' ? 'selected' : '' }}>Lista negraed</option>
+                    <option value="0" {{ request('is_blacklisted') == '0' ? 'selected' : '' }}>Not Lista negraed</option>
                 </select>
             </div>
 
@@ -81,13 +81,13 @@
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
-                    <th class="ps-4">Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
+                    <th class="ps-4">Nombre</th>
+                    <th>Correo electrónico</th>
+                    <th>Teléfono</th>
                     <th>Document</th>
-                    <th>Status</th>
-                    <th>Flags</th>
-                    <th class="text-center">Actions</th>
+                    <th>Estado</th>
+                    <th>Alertas</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,12 +103,12 @@
                         <td>{{ $guest->document_id }}</td>
                         <td>
                             @if ($guest->is_active)
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success">Activo</span>
                             @else
-                                <span class="badge bg-secondary">Inactive</span>
+                                <span class="badge bg-secondary">Inactivo</span>
                             @endif
                             @if ($guest->deleted_at)
-                                <span class="badge bg-danger">Deleted</span>
+                                <span class="badge bg-danger">Eliminard</span>
                             @endif
                         </td>
                         <td>
@@ -119,12 +119,12 @@
                             @endif
                             @if ($guest->is_frequent)
                                 <span class="badge bg-info">
-                                    <i class="fas fa-heart me-1"></i>Frequent
+                                    <i class="fas fa-heart me-1"></i>Frecuente
                                 </span>
                             @endif
                             @if ($guest->is_blacklisted)
                                 <span class="badge bg-danger">
-                                    <i class="fas fa-ban me-1"></i>Blacklisted
+                                    <i class="fas fa-ban me-1"></i>Lista negraed
                                 </span>
                             @endif
                         </td>
@@ -137,53 +137,53 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="{{ route('backend.guests.show', $guest) }}">
-                                            <i class="fas fa-eye me-2"></i>View Details
+                                            <i class="fas fa-eye me-2"></i>Ver detalles
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('backend.guests.edit', $guest) }}">
-                                            <i class="fas fa-edit me-2"></i>Edit
+                                            <i class="fas fa-edit me-2"></i>Editar
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form method="POST" action="{{ route('backend.guests.toggleStatus', $guest) }}" style="display: inline;">
+                                        <form method="POST" action="{{ route('backend.guests.toggle_status', $guest) }}" style="display: inline;">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="dropdown-item">
                                                 <i class="fas fa-toggle-{{ $guest->is_active ? 'on' : 'off' }} me-2"></i>
-                                                {{ $guest->is_active ? 'Deactivate' : 'Activate' }}
+                                                {{ $guest->is_active ? 'Desactivar' : 'Activar' }}
                                             </button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form method="POST" action="{{ route('backend.guests.toggleFrequent', $guest) }}" style="display: inline;">
+                                        <form method="POST" action="{{ route('backend.guests.toggle_frequent', $guest) }}" style="display: inline;">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="dropdown-item">
                                                 <i class="fas fa-heart me-2"></i>
-                                                {{ $guest->is_frequent ? 'Remove from Frequent' : 'Mark as Frequent' }}
+                                                {{ $guest->is_frequent ? 'Quitar de frecuentes' : 'Marcar como frecuente' }}
                                             </button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form method="POST" action="{{ route('backend.guests.toggleBlacklist', $guest) }}" style="display: inline;">
+                                        <form method="POST" action="{{ route('backend.guests.toggle_blacklist', $guest) }}" style="display: inline;">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="dropdown-item {{ $guest->is_blacklisted ? 'text-danger' : '' }}">
                                                 <i class="fas fa-ban me-2"></i>
-                                                {{ $guest->is_blacklisted ? 'Remove from Blacklist' : 'Add to Blacklist' }}
+                                                {{ $guest->is_blacklisted ? 'Quitar de lista negra' : 'Agregar a lista negra' }}
                                             </button>
                                         </form>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="POST" action="{{ route('backend.guests.destroy', $guest) }}" style="display: inline;"
-                                            onsubmit="return confirm('Soft delete this guest?');">
+                                            onsubmit="return confirm('¿Eliminar temporalmente este huésped?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger">
-                                                <i class="fas fa-trash me-2"></i>Delete
+                                                <i class="fas fa-trash me-2"></i>Eliminar
                                             </button>
                                         </form>
                                     </li>
@@ -195,7 +195,7 @@
                     <tr>
                         <td colspan="7" class="text-center py-4">
                             <i class="fas fa-inbox text-muted" style="font-size: 2rem;"></i>
-                            <p class="mt-2 text-muted">No guests found</p>
+                            <p class="mt-2 text-muted">No se encontraron huéspedes</p>
                         </td>
                     </tr>
                 @endforelse

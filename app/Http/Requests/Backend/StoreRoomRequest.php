@@ -26,7 +26,9 @@ class StoreRoomRequest extends FormRequest
             'floor' => 'nullable|string|max:100',
             'building' => 'nullable|string|max:100',
             'price_per_night' => 'required|numeric|min:0|decimal:0,2',
-            'capacity' => 'required|integer|min:1|max:10',
+            'capacity' => 'required|integer|min:1|max:50',
+            'max_capacity' => 'required|integer|min:1|max:50|gte:capacity',
+            'extra_person_price' => 'nullable|numeric|min:0|decimal:0,2',
             'description' => 'nullable|string|max:500',
             'image' => 'nullable|string',
             'status' => 'required|in:available,occupied,reserved,maintenance,blocked',
@@ -53,6 +55,7 @@ class StoreRoomRequest extends FormRequest
             'price_per_night.numeric' => 'Price must be a valid number.',
             'capacity.required' => 'Capacity is required.',
             'capacity.integer' => 'Capacity must be a whole number.',
+            'max_capacity.gte' => 'Maximum capacity must be greater than or equal to included capacity.',
             'status.required' => 'Status is required.',
             'room_status.required' => 'Cleaning status is required.',
         ];

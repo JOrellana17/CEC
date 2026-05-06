@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Edit Room Type')
+@section('title', 'Editar tipo de habitación')
 
 @section('content')
 <div class="card border-0 shadow-sm"><div class="card-body">

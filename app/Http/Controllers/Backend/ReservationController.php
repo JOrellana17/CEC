@@ -21,7 +21,7 @@ class ReservationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Reservation::with(['guest', 'room.roomType', 'room.floor'])
+        $query = Reservation::with(['guest', 'room.roomType', 'room.floorLevel'])
             ->orderBy('check_in', 'desc');
 
         // Apply filters
@@ -47,7 +47,7 @@ class ReservationController extends Controller
 
         $reservations = $query->paginate(15);
 
-        $rooms = Room::where('is_active', true)->with('roomType', 'floor')->get();
+        $rooms = Room::where('is_active', true)->with('roomType', 'floorLevel')->get();
         $guests = Guest::where('is_active', true)->orderBy('full_name')->get();
 
         return view('backend.reservations.index', compact('reservations', 'rooms', 'guests'));
@@ -59,7 +59,7 @@ class ReservationController extends Controller
     public function create(Request $request)
     {
         $guests = Guest::where('is_active', true)->orderBy('full_name')->get();
-        $rooms = Room::where('is_active', true)->with('roomType', 'floor')->get();
+        $rooms = Room::where('is_active', true)->with('roomType', 'floorLevel')->get();
 
         // Pre-select guest if provided
         $selectedGuest = null;
@@ -70,7 +70,7 @@ class ReservationController extends Controller
         // Pre-select room if provided
         $selectedRoom = null;
         if ($request->filled('room_id')) {
-            $selectedRoom = Room::with('roomType', 'floor')->find($request->room_id);
+            $selectedRoom = Room::with('roomType', 'floorLevel')->find($request->room_id);
         }
 
         return view('backend.reservations.create', compact('guests', 'rooms', 'selectedGuest', 'selectedRoom'));
@@ -112,7 +112,7 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
-        $reservation->load(['guest', 'room.roomType', 'room.floor', 'services.service', 'invoice.payments']);
+        $reservation->load(['guest', 'room.roomType', 'room.floorLevel', 'services.service', 'invoice.payments']);
 
         return view('backend.reservations.show', compact('reservation'));
     }
@@ -123,7 +123,7 @@ class ReservationController extends Controller
     public function edit(Reservation $reservation)
     {
         $guests = Guest::where('is_active', true)->orderBy('full_name')->get();
-        $rooms = Room::where('is_active', true)->with('roomType', 'floor')->get();
+        $rooms = Room::where('is_active', true)->with('roomType', 'floorLevel')->get();
 
         return view('backend.reservations.edit', compact('reservation', 'guests', 'rooms'));
     }
@@ -305,7 +305,7 @@ class ReservationController extends Controller
         $start = Carbon::parse($request->start);
         $end = Carbon::parse($request->end);
 
-        $query = Reservation::with(['guest', 'room.roomType', 'room.floor'])
+        $query = Reservation::with(['guest', 'room.roomType', 'room.floorLevel'])
             ->where(function ($q) use ($start, $end) {
                 $q->whereBetween('check_in', [$start, $end])
                   ->orWhereBetween('check_out', [$start, $end])
@@ -428,7 +428,7 @@ class ReservationController extends Controller
      */
     public function calendar()
     {
-        $rooms = Room::where('is_active', true)->with('roomType', 'floor')->get();
+        $rooms = Room::where('is_active', true)->with('roomType', 'floorLevel')->get();
 
         return view('backend.reservations.calendar', compact('rooms'));
     }

@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Operational Report')
+@section('title', 'Reporte operativo')
 
 @section('content')
 @include('backend.reports._filters')
@@ -12,22 +12,22 @@
 
 <div class="row g-3 mb-4">
     <div class="col-12 col-md-4"><div class="metric-card"><span>Occupancy</span><strong>{{ number_format($report['occupancy_rate'], 2) }}%</strong><small>{{ $report['total_rooms'] }} active rooms</small></div></div>
-    <div class="col-12 col-md-4"><div class="metric-card"><span>Available</span><strong>{{ $report['available_rooms']->count() }}</strong><small>Rooms ready to sell</small></div></div>
-    <div class="col-12 col-md-4"><div class="metric-card"><span>Active reservations</span><strong>{{ $report['active_reservations']->count() }}</strong><small>Pending, confirmed, checked in</small></div></div>
+    <div class="col-12 col-md-4"><div class="metric-card"><span>Disponible</span><strong>{{ $report['available_rooms']->count() }}</strong><small>Habitaciones listas para vender</small></div></div>
+    <div class="col-12 col-md-4"><div class="metric-card"><span>Reservaciones activas</span><strong>{{ $report['active_reservations']->count() }}</strong><small>Pendientes, confirmadas y con check-in</small></div></div>
 </div>
 
 <div class="row g-4">
     <div class="col-12 col-xl-6">
         <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white fw-semibold">Available Rooms</div>
+            <div class="card-header bg-white fw-semibold">Habitaciones disponibles</div>
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
-                    <thead><tr><th>Room</th><th>Type</th><th>Status</th><th>Cleaning</th></tr></thead>
+                    <thead><tr><th>Habitación</th><th>Tipo</th><th>Estado</th><th>Limpieza</th></tr></thead>
                     <tbody>
                     @forelse($report['available_rooms'] as $room)
                         <tr><td>{{ $room->room_number }}</td><td>{{ $room->roomType?->name }}</td><td>{{ Str::headline($room->status) }}</td><td>{{ Str::headline($room->room_status) }}</td></tr>
                     @empty
-                        <tr><td colspan="4" class="text-muted">No available rooms match these filters.</td></tr>
+                        <tr><td colspan="4" class="text-muted">No hay habitaciones disponibles que coincidan con estos filtros.</td></tr>
                     @endforelse
                     </tbody>
                 </table>
@@ -36,10 +36,10 @@
     </div>
     <div class="col-12 col-xl-6">
         <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white fw-semibold">Active Reservations</div>
+            <div class="card-header bg-white fw-semibold">Reservaciones activas</div>
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
-                    <thead><tr><th>Guest</th><th>Room</th><th>Dates</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Huésped</th><th>Habitación</th><th>Fechas</th><th>Estado</th></tr></thead>
                     <tbody>
                     @forelse($report['active_reservations'] as $reservation)
                         <tr>
@@ -49,7 +49,7 @@
                             <td><span class="badge text-bg-primary">{{ Str::headline($reservation->status) }}</span></td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="text-muted">No active reservations match these filters.</td></tr>
+                        <tr><td colspan="4" class="text-muted">No hay reservaciones activas que coincidan con estos filtros.</td></tr>
                     @endforelse
                     </tbody>
                 </table>

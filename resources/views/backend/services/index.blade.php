@@ -1,26 +1,26 @@
 @extends('layouts.backend')
 
-@section('title', 'Services')
+@section('title', 'Servicios')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item active">Services</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item active">Servicios</li>
 @endsection
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="h4 mb-1">Extra Services</h2>
+        <h2 class="h4 mb-1">Servicios adicionales</h2>
         <p class="text-muted mb-0">Restaurant, laundry, room service, transportation, mini bar, and custom services.</p>
     </div>
-    <a href="{{ route('backend.services.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Service</a>
+    <a href="{{ route('backend.services.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nuevo servicio</a>
 </div>
 
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
-                <tr><th>Name</th><th>Category</th><th>Price</th><th>Type</th><th>Status</th><th class="text-end">Actions</th></tr>
+                <tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Tipo</th><th>Estado</th><th class="text-end">Acciones</th></tr>
             </thead>
             <tbody>
                 @forelse($services as $service)
@@ -29,7 +29,7 @@
                     <td>{{ ucfirst(str_replace('_', ' ', $service->category)) }}</td>
                     <td>{{ $service->formatted_price }}</td>
                     <td>{{ ucfirst(str_replace('_', ' ', $service->price_type ?? 'per_unit')) }}</td>
-                    <td><span class="badge bg-{{ $service->is_active ? 'success' : 'secondary' }}">{{ $service->is_active ? 'Active' : 'Inactive' }}</span></td>
+                    <td><span class="badge bg-{{ $service->is_active ? 'success' : 'secondary' }}">{{ $service->is_active ? 'Activo' : 'Inactivo' }}</span></td>
                     <td class="text-end">
                         <a href="{{ route('backend.services.show', $service) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
                         <a href="{{ route('backend.services.edit', $service) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
@@ -37,7 +37,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center py-5 text-muted">No services found.</td></tr>
+                <tr><td colspan="6" class="text-center py-5 text-muted">No se encontraron servicios.</td></tr>
                 @endforelse
             </tbody>
         </table>

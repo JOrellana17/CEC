@@ -1,10 +1,10 @@
 @extends('layouts.backend')
 
-@section('title', 'Reservation Calendar')
+@section('title', 'Calendario de reservaciones')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.reservations.index') }}">Reservations</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.reservations.index') }}">Reservaciones</a></li>
 <li class="breadcrumb-item active">Calendar</li>
 @endsection
 
@@ -15,20 +15,17 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-calendar-alt me-2"></i>Reservation Calendar
+                        <i class="fas fa-calendar-alt me-2"></i>Calendario de reservaciones
                     </h5>
                     <div>
                         <a href="{{ route('backend.reservations.index') }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-list me-2"></i>List View
+                            <i class="fas fa-list me-2"></i>Vista de lista
                         </a>
                         <a href="{{ route('backend.icalendar.index') }}" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-calendar2-week"></i> iCalendar
                         </a>
-                        <a href="{{ route('backend.reservations.export_ics_calendar') }}" class="btn btn-outline-success btn-sm">
-                            <i class="bi bi-download"></i> Export .ics
-                        </a>
                         <a href="{{ route('backend.reservations.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus me-2"></i>New Reservation
+                            <i class="fas fa-plus me-2"></i>Nueva reservación
                         </a>
                     </div>
                 </div>
@@ -38,27 +35,27 @@
             <div class="card-body border-bottom">
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <label for="roomFilter" class="form-label">Filter by Room</label>
+                        <label for="roomFilter" class="form-label">Filter by Habitación</label>
                         <select id="roomFilter" class="form-select">
-                            <option value="">All Rooms</option>
+                            <option value="">All Habitaciones</option>
                             @foreach($rooms as $room)
                                 <option value="{{ $room->id }}">{{ $room->room_number }} - {{ $room->roomType->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="statusFilter" class="form-label">Filter by Status</label>
+                        <label for="statusFilter" class="form-label">Filter by Estado</label>
                         <select id="statusFilter" class="form-select">
-                            <option value="">All Statuses</option>
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="checked_in">Checked In</option>
-                            <option value="checked_out">Checked Out</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="">Todos los estados</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="confirmed">Confirmada</option>
+                            <option value="checked_in">Check-in realizado</option>
+                            <option value="checked_out">Check-out realizado</option>
+                            <option value="cancelled">Cancelada</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Calendar View</label>
+                        <label class="form-label">Vista de calendario</label>
                         <div class="btn-group w-100" role="group">
                             <button type="button" class="btn btn-outline-secondary btn-sm active" data-view="dayGridMonth">Month</button>
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-view="timeGridWeek">Week</button>
@@ -86,7 +83,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="reservationModalTitle">Reservation Details</h5>
+                <h5 class="modal-title" id="reservationModalTitle">Detalles de la reservación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="reservationModalBody">
@@ -94,7 +91,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="#" id="editReservationBtn" class="btn btn-primary">Edit Reservation</a>
+                <a href="#" id="editReservationBtn" class="btn btn-primary">Editar reservación</a>
             </div>
         </div>
     </div>
@@ -105,25 +102,25 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Quick Create Reservation</h5>
+                <h5 class="modal-title">Quick Crear reservación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="quickCreateForm">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="quickCheckIn" class="form-label">Check-in Date</label>
+                            <label for="quickCheckIn" class="form-label">Check-in Fecha</label>
                             <input type="date" class="form-control" id="quickCheckIn" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="quickCheckOut" class="form-label">Check-out Date</label>
+                            <label for="quickCheckOut" class="form-label">Check-out Fecha</label>
                             <input type="date" class="form-control" id="quickCheckOut" required>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <label for="quickRoom" class="form-label">Room</label>
+                        <label for="quickRoom" class="form-label">Habitación</label>
                         <select class="form-select" id="quickRoom" required>
-                            <option value="">Select Room</option>
+                            <option value="">Seleccione una habitación</option>
                             @foreach($rooms as $room)
                                 <option value="{{ $room->id }}">{{ $room->room_number }} - {{ $room->roomType->name }}</option>
                             @endforeach
@@ -134,9 +131,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="createReservationBtn" disabled>
-                        Create Reservation
+                        Crear reservación
                     </button>
                 </div>
             </form>
@@ -198,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize calendar
     const calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
+        initialVer: 'dayGridMonth',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
@@ -237,12 +234,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
-    // View switcher
+    // Ver switcher
     document.querySelectorAll('[data-view]').forEach(button => {
         button.addEventListener('click', function() {
             document.querySelectorAll('[data-view]').forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
-            calendar.changeView(this.dataset.view);
+            calendar.changeVer(this.dataset.view);
         });
     });
 
@@ -353,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 calendar.refetchEvents();
-                showToast('Reservation updated successfully', 'success');
+                showToast('Reservación actualizada correctamente', 'success');
             } else {
                 if (revertFunc) revertFunc.revert();
                 showToast(data.message || 'Failed to update reservation', 'error');
@@ -433,18 +430,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 availabilityAlert.style.display = 'block';
                 if (data.available) {
                     availabilityAlert.className = 'alert alert-success mt-3';
-                    availabilityAlert.innerHTML = '<i class="fas fa-check-circle me-2"></i>Room is available!';
+                    availabilityAlert.innerHTML = '<i class="fas fa-check-circle me-2"></i>¡La habitación está disponible!';
                     createBtn.disabled = false;
                 } else {
                     availabilityAlert.className = 'alert alert-danger mt-3';
-                    availabilityAlert.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Room is not available for these dates.';
+                    availabilityAlert.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>La habitación no está disponible para estas fechas.';
                     createBtn.disabled = true;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 availabilityAlert.className = 'alert alert-warning mt-3';
-                availabilityAlert.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Unable to check availability.';
+                availabilityAlert.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>No se pudo verificar la disponibilidad.';
                 createBtn.disabled = true;
             });
         }

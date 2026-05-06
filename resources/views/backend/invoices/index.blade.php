@@ -1,22 +1,22 @@
 @extends('layouts.backend')
 
-@section('title', 'Invoices')
+@section('title', 'Facturas')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item active">Invoices</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item active">Facturas</li>
 @endsection
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="h4 mb-1">Invoices</h2>
+        <h2 class="h4 mb-1">Facturas</h2>
         <p class="text-muted mb-0">Review charges, balances, and invoice status.</p>
     </div>
 
     @can('invoices.create')
     <a href="{{ route('backend.invoices.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> New Invoice
+        <i class="bi bi-plus-circle"></i> Nueva factura
     </a>
     @endcan
 </div>
@@ -25,9 +25,9 @@
     <div class="card-body">
         <form method="GET" action="{{ route('backend.invoices.index') }}" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Status</label>
+                <label class="form-label">Estado</label>
                 <select name="status" class="form-select">
-                    <option value="">All</option>
+                    <option value="">Todos</option>
                     @foreach(['draft', 'pending', 'partial', 'paid', 'cancelled', 'refunded'] as $status)
                     <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>
                         {{ ucfirst($status) }}
@@ -37,12 +37,12 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">From</label>
+                <label class="form-label">Desde</label>
                 <input type="date" name="date_from" value="{{ request('date_from') }}" class="form-control">
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">To</label>
+                <label class="form-label">Hasta</label>
                 <input type="date" name="date_to" value="{{ request('date_to') }}" class="form-control">
             </div>
 
@@ -63,22 +63,22 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>Invoice</th>
-                    <th>Guest</th>
-                    <th>Booking</th>
-                    <th>Issue Date</th>
+                    <th>Factura</th>
+                    <th>Huésped</th>
+                    <th>Reserva</th>
+                    <th>Issue Fecha</th>
                     <th>Total</th>
-                    <th>Due</th>
-                    <th>Status</th>
-                    <th class="text-end">Actions</th>
+                    <th>Pendiente</th>
+                    <th>Estado</th>
+                    <th class="text-end">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($invoices as $invoice)
                 <tr>
                     <td class="fw-semibold">{{ $invoice->invoice_number }}</td>
-                    <td>{{ $invoice->guest?->full_name ?? 'No guest' }}</td>
-                    <td>{{ $invoice->reservation ? 'Reservation #'.$invoice->reservation->id : ($invoice->booking?->booking_number ?? 'No booking') }}</td>
+                    <td>{{ $invoice->guest?->full_name ?? 'Sin huésped' }}</td>
+                    <td>{{ $invoice->reservation ? 'Reservación #'.$invoice->reservation->id : ($invoice->booking?->booking_number ?? 'Sin reserva') }}</td>
                     <td>{{ $invoice->issue_date?->format('Y-m-d') }}</td>
                     <td>${{ number_format((float) $invoice->total_amount, 2) }}</td>
                     <td>${{ number_format((float) $invoice->due_amount, 2) }}</td>
@@ -89,13 +89,13 @@
                     </td>
                     <td class="text-end">
                         <div class="btn-group">
-                            <a href="{{ route('backend.invoices.show', $invoice) }}" class="btn btn-sm btn-outline-secondary" title="View">
+                            <a href="{{ route('backend.invoices.show', $invoice) }}" class="btn btn-sm btn-outline-secondary" title="Ver">
                                 <i class="bi bi-eye"></i>
                             </a>
 
                             @can('invoices.edit')
                             @if($invoice->canBeCancelled())
-                            <a href="{{ route('backend.invoices.edit', $invoice) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                            <a href="{{ route('backend.invoices.edit', $invoice) }}" class="btn btn-sm btn-outline-primary" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             @endif
@@ -112,7 +112,7 @@
                             <form method="POST" action="{{ route('backend.invoices.mark_paid', $invoice) }}" class="d-inline">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-outline-success" title="Mark paid">
+                                <button type="submit" class="btn btn-sm btn-outline-success" title="Marcar como pagada">
                                     <i class="bi bi-check2-circle"></i>
                                 </button>
                             </form>
@@ -124,8 +124,8 @@
                 <tr>
                     <td colspan="8" class="text-center py-5">
                         <i class="bi bi-receipt text-muted" style="font-size: 3rem;"></i>
-                        <h3 class="h5 text-muted mt-3">No invoices found</h3>
-                        <p class="text-muted mb-0">Create an invoice from an eligible booking.</p>
+                        <h3 class="h5 text-muted mt-3">No se encontraron facturas</h3>
+                        <p class="text-muted mb-0">Cree una factura desde una reserva elegible.</p>
                     </td>
                 </tr>
                 @endforelse

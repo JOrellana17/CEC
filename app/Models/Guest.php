@@ -86,8 +86,10 @@ class Guest extends Model
      */
     public function getFullNameAttribute(): string
     {
-        if ($this->full_name) {
-            return $this->full_name;
+        $fullName = $this->attributes['full_name'] ?? null;
+
+        if ($fullName) {
+            return $fullName;
         }
 
         return trim("{$this->first_name} {$this->last_name}");

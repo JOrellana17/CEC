@@ -1,17 +1,17 @@
 @extends('layouts.backend')
 
-@section('title', 'Edit Invoice')
+@section('title', 'Editar factura')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.invoices.index') }}">Invoices</a></li>
-<li class="breadcrumb-item active">Edit</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.invoices.index') }}">Facturas</a></li>
+<li class="breadcrumb-item active">Editar</li>
 @endsection
 
 @section('content')
 <div class="card shadow-sm">
     <div class="card-body">
-        <h2 class="h4 mb-4">Edit {{ $invoice->invoice_number }}</h2>
+        <h2 class="h4 mb-4">Editar {{ $invoice->invoice_number }}</h2>
 
         <form method="POST" action="{{ route('backend.invoices.update', $invoice) }}">
             @csrf
@@ -19,7 +19,7 @@
 
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Room Charges</label>
+                    <label class="form-label">Cargos de habitación</label>
                     <input type="number" step="0.01" min="0" name="room_charges" class="form-control" required
                         value="{{ old('room_charges', $invoice->room_charges) }}">
                 </div>
@@ -44,17 +44,17 @@
                         value="{{ old('discount_amount', $invoice->discount_amount) }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Issue Date</label>
+                    <label class="form-label">Issue Fecha</label>
                     <input type="date" name="issue_date" class="form-control" required
                         value="{{ old('issue_date', $invoice->issue_date?->format('Y-m-d')) }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Due Date</label>
+                    <label class="form-label">Fecha de vencimiento</label>
                     <input type="date" name="due_date" class="form-control"
                         value="{{ old('due_date', $invoice->due_date?->format('Y-m-d')) }}">
                 </div>
                 <div class="col-12">
-                    <label class="form-label">Notes</label>
+                    <label class="form-label">Notas</label>
                     <textarea name="notes" class="form-control" rows="3">{{ old('notes', $invoice->notes) }}</textarea>
                 </div>
                 <div class="col-12">
@@ -64,8 +64,8 @@
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="{{ route('backend.invoices.show', $invoice) }}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a href="{{ route('backend.invoices.show', $invoice) }}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </form>
     </div>

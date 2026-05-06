@@ -1,50 +1,50 @@
 @extends('layouts.backend')
 
-@section('title', 'Room {{ $room->room_number }}')
+@section('title', 'Habitación {{ $room->room_number }}')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.rooms.index') }}">Rooms</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.rooms.index') }}">Habitaciones</a></li>
 <li class="breadcrumb-item active">{{ $room->room_number }}</li>
 @endsection
 
 @section('content')
 <div class="row">
-    <!-- Room Information -->
+    <!-- Información de la habitación -->
     <div class="col-md-8">
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-title d-flex align-items-center">
                     <i class="fas fa-door-open me-2"></i>
-                    Room {{ $room->room_number }}
+                    Habitación {{ $room->room_number }}
                 </h5>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Room Type:</strong><br>
+                        <strong>Tipo de habitación:</strong><br>
                         {{ $room->roomType->name }}
                     </div>
                     <div class="col-md-6">
-                        <strong>Floor:</strong><br>
-                        Floor {{ $room->floor->number }} - {{ $room->floor->name }}
+                        <strong>Piso:</strong><br>
+                        Piso {{ $room->floorLevel->number }} - {{ $room->floorLevel->name }}
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Capacity:</strong><br>
-                        {{ $room->capacity }} guests
+                        <strong>Capacidad:</strong><br>
+                        {{ $room->capacity }} huéspedes
                     </div>
                     <div class="col-md-6">
-                        <strong>Price per Night:</strong><br>
+                        <strong>Precio por noche:</strong><br>
                         ${{ number_format($room->price_per_night, 2) }}
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Status:</strong><br>
+                        <strong>Estado:</strong><br>
                         <span class="badge bg-{{ 
                             $room->status === 'available' ? 'success' :
                             ($room->status === 'occupied' ? 'danger' :
@@ -55,7 +55,7 @@
                         </span>
                     </div>
                     <div class="col-md-6">
-                        <strong>Cleaning Status:</strong><br>
+                        <strong>Estado de limpieza:</strong><br>
                         <span class="badge bg-{{ 
                             $room->room_status === 'clean' ? 'success' :
                             ($room->room_status === 'inspected' ? 'info' : 'warning')
@@ -67,26 +67,26 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Building:</strong><br>
+                        <strong>Edificio:</strong><br>
                         {{ $room->building ?? 'N/A' }}
                     </div>
                     <div class="col-md-6">
-                        <strong>Features:</strong><br>
+                        <strong>Características:</strong><br>
                         @if ($room->is_smoking)
-                            <span class="badge bg-secondary me-1">Smoking</span>
+                            <span class="badge bg-secondary me-1">Fumadores</span>
                         @endif
                         @if ($room->has_balcony)
-                            <span class="badge bg-secondary me-1">Balcony</span>
+                            <span class="badge bg-secondary me-1">Balcón</span>
                         @endif
                         @if (!$room->is_smoking && !$room->has_balcony)
-                            <span class="text-muted">No special features</span>
+                            <span class="text-muted">Sin características especiales</span>
                         @endif
                     </div>
                 </div>
 
                 @if ($room->description)
                     <div class="mt-3">
-                        <strong>Description:</strong><br>
+                        <strong>Descripción:</strong><br>
                         {!! nl2br($room->description) !!}
                     </div>
                 @endif
@@ -97,12 +97,12 @@
         @if ($room->currentBooking)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h6 class="card-title"><i class="fas fa-user-check me-2"></i>Current Guest</h6>
+                    <h6 class="card-title"><i class="fas fa-user-check me-2"></i>Huésped actual</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <strong>Guest:</strong><br>
+                            <strong>Huésped:</strong><br>
                             {{ $room->currentBooking->guest->full_name }}
                         </div>
                         <div class="col-md-6">
@@ -116,7 +116,7 @@
                             {{ $room->currentBooking->check_out_date->format('M d, Y') }}
                         </div>
                         <div class="col-md-6">
-                            <strong>Booking Status:</strong><br>
+                            <strong>Estado de la reserva:</strong><br>
                             <span class="badge bg-info">{{ ucfirst($room->currentBooking->booking_status) }}</span>
                         </div>
                     </div>
@@ -128,16 +128,16 @@
         @if ($occupancyHistory->count() > 0)
             <div class="card">
                 <div class="card-header">
-                    <h6 class="card-title"><i class="fas fa-history me-2"></i>Recent Occupancy History</h6>
+                    <h6 class="card-title"><i class="fas fa-history me-2"></i>Historial reciente de ocupación</h6>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Guest</th>
+                                <th>Huésped</th>
                                 <th>Check-in</th>
                                 <th>Check-out</th>
-                                <th>Status</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,7 +147,7 @@
                                     <td>{{ $booking->check_in_date->format('M d, Y') }}</td>
                                     <td>{{ $booking->check_out_date->format('M d, Y') }}</td>
                                     <td>
-                                        <span class="badge bg-success">Completed</span>
+                                        <span class="badge bg-success">Completada</span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -163,23 +163,23 @@
         <!-- Statistics -->
         <div class="card mb-4">
             <div class="card-header">
-                <h6 class="card-title"><i class="fas fa-chart-bar me-2"></i>Statistics</h6>
+                <h6 class="card-title"><i class="fas fa-chart-bar me-2"></i>Estadísticas</h6>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <div class="text-muted small">Total Bookings</div>
+                    <div class="text-muted small">Total de reservas</div>
                     <div class="h4">{{ $room->bookings->count() }}</div>
                 </div>
                 <div class="mb-3">
-                    <div class="text-muted small">Total Revenue</div>
+                    <div class="text-muted small">Ingresos totales</div>
                     <div class="h4">${{ number_format($room->bookings->sum('total_amount'), 2) }}</div>
                 </div>
                 <div class="mb-3">
-                    <div class="text-muted small">Occupancy Rate</div>
+                    <div class="text-muted small">Tasa de ocupación</div>
                     <div class="h4">{{ $room->bookings->count() > 0 ? round(($room->bookings->where('booking_status', 'checked_out')->count() / $room->bookings->count()) * 100, 1) : 0 }}%</div>
                 </div>
                 <div>
-                    <div class="text-muted small">Created</div>
+                    <div class="text-muted small">Creado</div>
                     <div>{{ $room->created_at->format('M d, Y') }}</div>
                 </div>
             </div>
@@ -188,12 +188,12 @@
         <!-- Actions -->
         <div class="card">
             <div class="card-header">
-                <h6 class="card-title">Actions</h6>
+                <h6 class="card-title">Acciones</h6>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="{{ route('backend.rooms.edit', $room) }}" class="btn btn-primary">
-                        <i class="fas fa-edit me-2"></i>Edit Room
+                        <i class="fas fa-edit me-2"></i>Editarar habitación
                     </a>
 
                     <div class="btn-group-vertical w-100" role="group">
@@ -202,7 +202,7 @@
                             @method('PATCH')
                             <input type="hidden" name="status" value="available">
                             <button type="submit" class="btn btn-success w-100">
-                                <i class="fas fa-door-open me-2"></i>Mark Available
+                                <i class="fas fa-door-open me-2"></i>Marcar disponible
                             </button>
                         </form>
 
@@ -211,7 +211,7 @@
                             @method('PATCH')
                             <input type="hidden" name="status" value="maintenance">
                             <button type="submit" class="btn btn-warning w-100">
-                                <i class="fas fa-tools me-2"></i>Mark Maintenance
+                                <i class="fas fa-tools me-2"></i>Marcar mantenimiento
                             </button>
                         </form>
                     </div>
@@ -222,7 +222,7 @@
                             @method('PATCH')
                             <input type="hidden" name="room_status" value="clean">
                             <button type="submit" class="btn btn-info w-100">
-                                <i class="fas fa-check me-2"></i>Mark Clean
+                                <i class="fas fa-check me-2"></i>Marcar limpia
                             </button>
                         </form>
 
@@ -231,7 +231,7 @@
                             @method('PATCH')
                             <input type="hidden" name="room_status" value="dirty">
                             <button type="submit" class="btn btn-secondary w-100">
-                                <i class="fas fa-times me-2"></i>Mark Dirty
+                                <i class="fas fa-times me-2"></i>Marcar sucia
                             </button>
                         </form>
                     </div>

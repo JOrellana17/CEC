@@ -34,6 +34,9 @@ Route::middleware('guest')->group(function () {
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('icalendar/feed/{token}', [ICalendarController::class, 'feed'])->name('icalendar.feed');
+Route::get('icalendar/feed/{token}/rooms/{room}', [ICalendarController::class, 'roomFeed'])->name('icalendar.feed.room');
+
 Route::middleware(['auth', 'sanitize.input', 'backend.authorize'])->prefix('backend')->name('backend.')->group(function () {
 
     // Dashboard
@@ -61,7 +64,7 @@ Route::middleware(['auth', 'sanitize.input', 'backend.authorize'])->prefix('back
     Route::post('guests/{id}/restore', [GuestController::class, 'restore'])->name('guests.restore');
 
     // Bookings
-    Route::resource('bookings', BookingController::class)->except(['destroy']);
+    Route::resource('bookings', BookingController::class);
     Route::patch('bookings/{booking}/check-in', [BookingController::class, 'checkIn'])->name('bookings.check_in');
     Route::patch('bookings/{booking}/check-out', [BookingController::class, 'checkOut'])->name('bookings.check_out');
     Route::patch('bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
@@ -84,8 +87,10 @@ Route::middleware(['auth', 'sanitize.input', 'backend.authorize'])->prefix('back
 
     // iCalendar integration
     Route::get('icalendar', [ICalendarController::class, 'index'])->name('icalendar.index');
+    Route::get('icalendar/events', [ICalendarController::class, 'events'])->name('icalendar.events');
     Route::patch('icalendar/settings', [ICalendarController::class, 'updateSettings'])->name('icalendar.settings');
     Route::post('icalendar/import/preview', [ICalendarController::class, 'previewImport'])->name('icalendar.import_preview');
+    Route::post('icalendar/import/url-preview', [ICalendarController::class, 'previewImportUrl'])->name('icalendar.import_url_preview');
     Route::post('icalendar/import/confirm', [ICalendarController::class, 'confirmImport'])->name('icalendar.import_confirm');
     Route::post('icalendar/sync', [ICalendarController::class, 'syncNow'])->name('icalendar.sync');
 

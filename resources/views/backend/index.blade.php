@@ -1,9 +1,9 @@
 @extends('layouts.backend')
 
-@section('title', 'Modules')
+@section('title', 'Módulos')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active">Modules</li>
+<li class="breadcrumb-item active">Módulos</li>
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
     <div class="col-sm-6 col-xl-3">
         <div class="card border-start border-4 border-primary shadow-sm h-100">
             <div class="card-body">
-                <div class="text-muted small text-uppercase fw-semibold">Today's Check-ins</div>
+                <div class="text-muted small text-uppercase fw-semibold">Check-ins de Hoy</div>
                 <div class="display-6 fw-bold">{{ $pendingCheckIns }}</div>
             </div>
         </div>
@@ -20,7 +20,7 @@
     <div class="col-sm-6 col-xl-3">
         <div class="card border-start border-4 border-success shadow-sm h-100">
             <div class="card-body">
-                <div class="text-muted small text-uppercase fw-semibold">Today's Check-outs</div>
+                <div class="text-muted small text-uppercase fw-semibold">Check-outs de Hoy</div>
                 <div class="display-6 fw-bold">{{ $pendingCheckOuts }}</div>
             </div>
         </div>
@@ -29,7 +29,7 @@
     <div class="col-sm-6 col-xl-3">
         <div class="card border-start border-4 border-info shadow-sm h-100">
             <div class="card-body">
-                <div class="text-muted small text-uppercase fw-semibold">Available Rooms</div>
+                <div class="text-muted small text-uppercase fw-semibold">Habitaciones disponibles</div>
                 <div class="display-6 fw-bold">{{ $availableRooms }}</div>
             </div>
         </div>
@@ -38,7 +38,7 @@
     <div class="col-sm-6 col-xl-3">
         <div class="card border-start border-4 border-warning shadow-sm h-100">
             <div class="card-body">
-                <div class="text-muted small text-uppercase fw-semibold">Active Reservations</div>
+                <div class="text-muted small text-uppercase fw-semibold">Reservaciones activas</div>
                 <div class="display-6 fw-bold">{{ $activeReservations }}</div>
             </div>
         </div>
@@ -47,8 +47,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h2 class="h4 mb-1">Choose a Module</h2>
-        <p class="text-muted mb-0">Open the area you want to work with.</p>
+        <h2 class="h4 mb-1">Elija un módulo</h2>
+        <p class="text-muted mb-0">Abra el área en la que desea trabajar.</p>
     </div>
 </div>
 

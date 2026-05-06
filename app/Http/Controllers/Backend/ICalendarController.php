@@ -3,16 +3,27 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\CalendarEvent;
 use App\Models\Reservation;
+use App\Models\Room;
 use App\Models\Setting;
 use App\Services\ICalendarService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class ICalendarController extends Controller
 {
     public function index()
     {
+        $feedToken = Setting::get('ical_feed_token');
+        if (! $feedToken) {
+            $feedToken = Str::random(40);
+            Setting::set('ical_feed_token', $feedToken, 'string', 'Public iCalendar subscription token.');
+        }
+
         return view('backend.icalendar.index', [
+            'rooms' => Room::where('is_active', true)->with('roomType', 'floorLevel')->orderBy('room_number')->get(),
             'externalUrls' => Setting::get('ical_external_urls', []),
             'syncFrequency' => Setting::get('ical_sync_frequency', 30),
             'conflictStrategy' => Setting::get('ical_conflict_strategy', 'reject'),
@@ -20,6 +31,8 @@ class ICalendarController extends Controller
             'lastSyncedAt' => Setting::get('ical_last_synced_at'),
             'lastSyncResults' => Setting::get('ical_last_sync_results', []),
             'previewEvents' => session('ical_import_preview', []),
+            'feedUrl' => route('icalendar.feed', $feedToken),
+            'feedToken' => $feedToken,
         ]);
     }
 
@@ -63,6 +76,25 @@ class ICalendarController extends Controller
             ->with('success', count($events).' iCalendar event(s) parsed. Review and confirm import.');
     }
 
+    public function previewImportUrl(Request $request, ICalendarService $calendar)
+    {
+        $validated = $request->validate([
+            'ics_url' => 'required|url|max:2048',
+        ]);
+
+        $contents = Http::timeout(15)->get($validated['ics_url'])->throw()->body();
+        $events = $calendar->preview($contents, 'url');
+
+        foreach ($events as &$event) {
+            $event['external_url'] = $validated['ics_url'];
+        }
+
+        session(['ical_import_preview' => $events]);
+
+        return redirect()->route('backend.icalendar.index')
+            ->with('success', count($events).' event(s) loaded from the iCalendar URL. Review and confirm import.');
+    }
+
     public function confirmImport(Request $request, ICalendarService $calendar)
     {
         $validated = $request->validate([
@@ -86,9 +118,53 @@ class ICalendarController extends Controller
 
     public function syncNow(ICalendarService $calendar)
     {
-        $calendar->syncExternalCalendars();
+        $results = $calendar->syncExternalCalendars();
 
-        return back()->with('success', 'External calendars synchronized.');
+        return back()->with('success', 'External calendars synchronized.')
+            ->with('ical_sync_results', $results);
+    }
+
+    public function events(Request $request)
+    {
+        $start = $request->date('start');
+        $end = $request->date('end');
+        $roomId = $request->input('room_id');
+        $source = $request->input('source');
+        $status = $request->input('status');
+
+        $reservations = Reservation::with(['guest', 'room.roomType', 'calendarEvents'])
+            ->when($start && $end, function ($query) use ($start, $end) {
+                $query->where('check_in', '<=', $end->toDateString())
+                    ->where('check_out', '>=', $start->toDateString());
+            })
+            ->when($roomId, fn ($query) => $query->where('room_id', $roomId))
+            ->when($status, fn ($query) => $query->where('status', $status))
+            ->get();
+
+        return response()->json($reservations->map(function (Reservation $reservation) {
+            $calendarEvent = $reservation->calendarEvents->sortByDesc('updated_at')->first();
+            $source = $calendarEvent?->source ?? 'local';
+
+            return [
+                'id' => 'reservation-'.$reservation->id,
+                'title' => $reservation->room?->room_number.' - '.$reservation->guest?->full_name,
+                'start' => $reservation->check_in->toDateString(),
+                'end' => $reservation->check_out->copy()->addDay()->toDateString(),
+                'allDay' => true,
+                'url' => route('backend.reservations.show', $reservation),
+                'backgroundColor' => $this->eventColor($reservation->status, $source),
+                'borderColor' => $this->eventColor($reservation->status, $source),
+                'extendedProps' => [
+                    'reservation_id' => $reservation->id,
+                    'room_id' => $reservation->room_id,
+                    'room' => $reservation->room?->room_number,
+                    'guest' => $reservation->guest?->full_name,
+                    'status' => $reservation->status,
+                    'source' => $source,
+                    'external_url' => $calendarEvent?->external_url,
+                ],
+            ];
+        })->when($source, fn ($events) => $events->where('extendedProps.source', $source))->values());
     }
 
     public function exportReservation(Reservation $reservation, ICalendarService $calendar)
@@ -108,7 +184,7 @@ class ICalendarController extends Controller
             'date_to' => 'required|date|after_or_equal:date_from',
         ]);
 
-        $reservations = Reservation::with(['guest', 'room.roomType', 'room.floor'])
+        $reservations = Reservation::with(['guest', 'room.roomType', 'room.floorLevel'])
             ->where('check_in', '<=', $validated['date_to'])
             ->where('check_out', '>=', $validated['date_from'])
             ->where('status', '!=', 'cancelled')
@@ -124,7 +200,7 @@ class ICalendarController extends Controller
 
     public function exportCalendar(ICalendarService $calendar)
     {
-        $reservations = Reservation::with(['guest', 'room.roomType', 'room.floor'])
+        $reservations = Reservation::with(['guest', 'room.roomType', 'room.floorLevel'])
             ->where('status', '!=', 'cancelled')
             ->get();
 
@@ -134,5 +210,50 @@ class ICalendarController extends Controller
             'Content-Type' => 'text/calendar; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="reservation-calendar.ics"',
         ]);
+    }
+
+    public function feed(string $token, ICalendarService $calendar)
+    {
+        abort_unless(hash_equals((string) Setting::get('ical_feed_token'), $token), 404);
+
+        $reservations = Reservation::with(['guest', 'room.roomType', 'room.floorLevel'])
+            ->where('status', '!=', 'cancelled')
+            ->get();
+
+        return response($calendar->export($reservations, config('app.name', 'SIGEH-PHP').' Reservations'), 200, [
+            'Content-Type' => 'text/calendar; charset=utf-8',
+            'Content-Disposition' => 'inline; filename="reservations.ics"',
+        ]);
+    }
+
+    public function roomFeed(string $token, Room $room, ICalendarService $calendar)
+    {
+        abort_unless(hash_equals((string) Setting::get('ical_feed_token'), $token), 404);
+
+        $reservations = Reservation::with(['guest', 'room.roomType', 'room.floorLevel'])
+            ->where('room_id', $room->id)
+            ->where('status', '!=', 'cancelled')
+            ->get();
+
+        return response($calendar->export($reservations, "Calendar {$room->room_number}"), 200, [
+            'Content-Type' => 'text/calendar; charset=utf-8',
+            'Content-Disposition' => 'inline; filename="calendar-'.$room->room_number.'.ics"',
+        ]);
+    }
+
+    private function eventColor(string $status, string $source): string
+    {
+        if ($source !== 'local') {
+            return '#6f42c1';
+        }
+
+        return match ($status) {
+            'pending' => '#ffc107',
+            'confirmed' => '#198754',
+            'checked_in' => '#0d6efd',
+            'checked_out' => '#6c757d',
+            'cancelled' => '#dc3545',
+            default => '#0dcaf0',
+        };
     }
 }

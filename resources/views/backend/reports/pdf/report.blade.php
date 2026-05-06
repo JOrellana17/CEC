@@ -18,18 +18,18 @@
 
     <div class="summary">
         @if($type === 'operational')
-            Occupancy: {{ number_format($report['occupancy_rate'], 2) }}% | Available rooms: {{ $report['available_rooms']->count() }} | Active reservations: {{ $report['active_reservations']->count() }}
+            Ocupación: {{ number_format($report['occupancy_rate'], 2) }}% | Habitaciones disponibles: {{ $report['available_rooms']->count() }} | Reservaciones activas: {{ $report['active_reservations']->count() }}
         @elseif($type === 'financial')
             Revenue: {{ number_format($report['total_revenue'], 2) }} | Invoiced: {{ number_format($report['total_invoiced'], 2) }} | Outstanding: {{ number_format($report['total_outstanding'], 2) }}
         @else
-            Frequent guests: {{ $report['most_frequent_guests']->count() }} | Cancellations: {{ $report['total_cancellations'] }}
+            Huéspedes frecuentes: {{ $report['most_frequent_guests']->count() }} | Cancelaciones: {{ $report['total_cancellations'] }}
         @endif
     </div>
 
     <table>
         <thead>
             <tr>
-                @foreach(array_keys($rows->first() ?? ['No data' => '']) as $heading)
+                @foreach(array_keys($rows->first() ?? ['Sin datos' => '']) as $heading)
                     <th>{{ $heading }}</th>
                 @endforeach
             </tr>
@@ -42,7 +42,7 @@
                     @endforeach
                 </tr>
             @empty
-                <tr><td>No data available for this report.</td></tr>
+                <tr><td>No hay datos disponibles para este reporte.</td></tr>
             @endforelse
         </tbody>
     </table>

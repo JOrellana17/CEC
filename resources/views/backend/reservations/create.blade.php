@@ -1,11 +1,11 @@
 @extends('layouts.backend')
 
-@section('title', 'Create Reservation')
+@section('title', 'Crear reservación')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.reservations.index') }}">Reservations</a></li>
-<li class="breadcrumb-item active">Create</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item"><a href="{{ route('backend.reservations.index') }}">Reservaciones</a></li>
+<li class="breadcrumb-item active">Crear</li>
 @endsection
 
 @section('content')
@@ -13,18 +13,18 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">Create New Reservation</h5>
+                <h5 class="card-title">Crear nueva reservación</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('backend.reservations.store') }}" method="POST" id="reservationForm">
                     @csrf
 
                     <!-- Guest Selection -->
-                    <h6 class="mb-3"><i class="fas fa-user me-2"></i>Guest Information</h6>
+                    <h6 class="mb-3"><i class="fas fa-user me-2"></i>Información del huésped</h6>
 
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label for="guest_id" class="form-label">Select Guest <span class="text-danger">*</span></label>
+                            <label for="guest_id" class="form-label">Seleccione huésped <span class="text-danger">*</span></label>
                             <select class="form-select @error('guest_id') is-invalid @enderror"
                                     id="guest_id" name="guest_id" required>
                                 <option value="">Choose a guest...</option>
@@ -48,24 +48,24 @@
                         </div>
                     </div>
 
-                    <!-- Guest Details (populated via JS) -->
-                    <div id="guestDetails" class="row mb-3" style="display: none;">
+                    <!-- Guest Detalles (populated via JS) -->
+                    <div id="guestDetalles" class="row mb-3" style="display: none;">
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">Correo electrónico</label>
                             <input type="text" class="form-control" id="guestEmail" readonly>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Phone</label>
+                            <label class="form-label">Teléfono</label>
                             <input type="text" class="form-control" id="guestPhone" readonly>
                         </div>
                     </div>
 
                     <!-- Room Selection -->
-                    <h6 class="mb-3 mt-4"><i class="fas fa-door-open me-2"></i>Room Information</h6>
+                    <h6 class="mb-3 mt-4"><i class="fas fa-door-open me-2"></i>Información de la habitación</h6>
 
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label for="room_id" class="form-label">Select Room <span class="text-danger">*</span></label>
+                            <label for="room_id" class="form-label">Seleccione habitación <span class="text-danger">*</span></label>
                             <select class="form-select @error('room_id') is-invalid @enderror"
                                     id="room_id" name="room_id" required>
                                 <option value="">Choose a room...</option>
@@ -73,10 +73,12 @@
                                     <option value="{{ $room->id }}"
                                             {{ ($selectedRoom && $selectedRoom->id == $room->id) ? 'selected' : '' }}
                                             data-capacity="{{ $room->capacity }}"
+                                            data-max-capacity="{{ $room->max_capacity ?? $room->capacity }}"
+                                            data-extra-person-price="{{ $room->extra_person_price ?? 0 }}"
                                             data-price="{{ $room->price_per_night }}"
                                             data-type="{{ $room->roomType->name }}">
                                         {{ $room->room_number }} - {{ $room->roomType->name }}
-                                        ({{ $room->floor->name }} - ${{ number_format($room->price_per_night, 2) }}/night)
+                                        ({{ $room->floorLevel->name }} - ${{ number_format($room->price_per_night, 2) }}/night)
                                     </option>
                                 @endforeach
                             </select>
@@ -86,28 +88,28 @@
                         </div>
                     </div>
 
-                    <!-- Room Details (populated via JS) -->
-                    <div id="roomDetails" class="row mb-3" style="display: none;">
+                    <!-- Room Detalles (populated via JS) -->
+                    <div id="roomDetalles" class="row mb-3" style="display: none;">
                         <div class="col-md-4">
-                            <label class="form-label">Room Type</label>
+                            <label class="form-label">Tipo de habitación</label>
                             <input type="text" class="form-control" id="roomType" readonly>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Capacity</label>
+                            <label class="form-label">Capacidad</label>
                             <input type="text" class="form-control" id="roomCapacity" readonly>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Price/Night</label>
+                            <label class="form-label">Precio/Noche</label>
                             <input type="text" class="form-control" id="roomPrice" readonly>
                         </div>
                     </div>
 
                     <!-- Reservation Dates -->
-                    <h6 class="mb-3 mt-4"><i class="fas fa-calendar me-2"></i>Reservation Dates</h6>
+                    <h6 class="mb-3 mt-4"><i class="fas fa-calendar me-2"></i>Fechas de reservación</h6>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="check_in" class="form-label">Check-in Date <span class="text-danger">*</span></label>
+                            <label for="check_in" class="form-label">Fecha de check-in <span class="text-danger">*</span></label>
                             <input type="date" class="form-control @error('check_in') is-invalid @enderror"
                                    id="check_in" name="check_in" value="{{ old('check_in') }}" required
                                    min="{{ date('Y-m-d', strtotime('+1 day')) }}">
@@ -116,7 +118,7 @@
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="check_out" class="form-label">Check-out Date <span class="text-danger">*</span></label>
+                            <label for="check_out" class="form-label">Fecha de check-out <span class="text-danger">*</span></label>
                             <input type="date" class="form-control @error('check_out') is-invalid @enderror"
                                    id="check_out" name="check_out" value="{{ old('check_out') }}" required>
                             @error('check_out')
@@ -126,11 +128,11 @@
                     </div>
 
                     <!-- Guest Count & Status -->
-                    <h6 class="mb-3 mt-4"><i class="fas fa-users me-2"></i>Reservation Details</h6>
+                    <h6 class="mb-3 mt-4"><i class="fas fa-users me-2"></i>Detalles de la reservación</h6>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="guests_count" class="form-label">Number of Guests <span class="text-danger">*</span></label>
+                            <label for="guests_count" class="form-label">Número de huéspedes <span class="text-danger">*</span></label>
                             <input type="number" class="form-control @error('guests_count') is-invalid @enderror"
                                    id="guests_count" name="guests_count" value="{{ old('guests_count', 1) }}"
                                    min="1" max="10" required>
@@ -139,11 +141,11 @@
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                            <label for="status" class="form-label">Estado <span class="text-danger">*</span></label>
                             <select class="form-select @error('status') is-invalid @enderror"
                                     id="status" name="status" required>
-                                <option value="pending" {{ old('status', 'pending') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                <option value="pending" {{ old('status', 'pending') == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                                <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Confirmada</option>
                             </select>
                             @error('status')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -152,10 +154,10 @@
                     </div>
 
                     <!-- Notes -->
-                    <h6 class="mb-3 mt-4"><i class="fas fa-sticky-note me-2"></i>Additional Notes</h6>
+                    <h6 class="mb-3 mt-4"><i class="fas fa-sticky-note me-2"></i>Additional Notas</h6>
 
                     <div class="mb-3">
-                        <label for="notes" class="form-label">Notes</label>
+                        <label for="notes" class="form-label">Notas</label>
                         <textarea class="form-control @error('notes') is-invalid @enderror"
                                   id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
                         @error('notes')
@@ -172,10 +174,10 @@
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-primary" id="submitBtn">
-                                <i class="fas fa-save me-2"></i>Create Reservation
+                                <i class="fas fa-save me-2"></i>Crear reservación
                             </button>
                             <a href="{{ route('backend.reservations.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i>Cancelar
                             </a>
                         </div>
                     </div>
@@ -193,11 +195,11 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <div class="text-muted small">Active Reservations</div>
+                    <div class="text-muted small">Reservaciones activas</div>
                     <div class="h4">{{ \App\Models\Reservation::whereIn('status', ['pending', 'confirmed'])->count() }}</div>
                 </div>
                 <div class="mb-3">
-                    <div class="text-muted small">Available Rooms</div>
+                    <div class="text-muted small">Habitaciones disponibles</div>
                     <div class="h4">{{ \App\Models\Room::where('is_active', true)->where('status', 'available')->count() }}</div>
                 </div>
                 <div>
@@ -210,7 +212,7 @@
         <!-- Recent Reservations -->
         <div class="card">
             <div class="card-header">
-                <h6 class="card-title"><i class="fas fa-clock me-2"></i>Recent Reservations</h6>
+                <h6 class="card-title"><i class="fas fa-clock me-2"></i>Recent Reservaciones</h6>
             </div>
             <div class="card-body p-0">
                 @foreach(\App\Models\Reservation::with(['guest', 'room'])->latest()->take(5)->get() as $recent)
@@ -250,37 +252,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // Guest selection handler
     guestSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
-        const guestDetails = document.getElementById('guestDetails');
+        const guestDetalles = document.getElementById('guestDetalles');
 
         if (this.value) {
             document.getElementById('guestEmail').value = selectedOption.getAttribute('data-email') || '';
             document.getElementById('guestPhone').value = selectedOption.getAttribute('data-phone') || '';
-            guestDetails.style.display = 'flex';
+            guestDetalles.style.display = 'flex';
         } else {
-            guestDetails.style.display = 'none';
+            guestDetalles.style.display = 'none';
         }
     });
 
     // Room selection handler
     roomSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
-        const roomDetails = document.getElementById('roomDetails');
+        const roomDetalles = document.getElementById('roomDetalles');
 
         if (this.value) {
             document.getElementById('roomType').value = selectedOption.getAttribute('data-type') || '';
             document.getElementById('roomCapacity').value = selectedOption.getAttribute('data-capacity') || '';
             document.getElementById('roomPrice').value = '$' + (selectedOption.getAttribute('data-price') || '0');
 
-            // Update max guests
-            const capacity = parseInt(selectedOption.getAttribute('data-capacity')) || 10;
+            // Guests above included capacity are allowed up to maximum capacity.
+            const capacity = parseInt(selectedOption.getAttribute('data-max-capacity')) || parseInt(selectedOption.getAttribute('data-capacity')) || 10;
             guestsCountInput.max = capacity;
             if (parseInt(guestsCountInput.value) > capacity) {
                 guestsCountInput.value = capacity;
             }
 
-            roomDetails.style.display = 'flex';
+            roomDetalles.style.display = 'flex';
         } else {
-            roomDetails.style.display = 'none';
+            roomDetalles.style.display = 'none';
         }
 
         checkAvailability();
@@ -336,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             availabilityCheck.style.display = 'block';
             availabilityCheck.className = 'alert alert-warning';
-            availabilityCheck.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Unable to check availability. Please try again.';
+            availabilityCheck.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>No se pudo verificar la disponibilidad. Intente de nuevo.';
             submitBtn.disabled = false;
         });
     }

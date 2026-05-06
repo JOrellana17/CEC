@@ -1,20 +1,20 @@
 @extends('layouts.backend')
 
-@section('title', 'Payments')
+@section('title', 'Pagos')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item active">Payments</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item active">Pagos</li>
 @endsection
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="h4 mb-1">Payments</h2>
+        <h2 class="h4 mb-1">Pagos</h2>
         <p class="text-muted mb-0">Register payments and review payment history.</p>
     </div>
     <a href="{{ route('backend.payments.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Register Payment
+        <i class="bi bi-plus-circle"></i> Registrar pago
     </a>
 </div>
 
@@ -31,7 +31,7 @@
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select">
-                    <option value="">All Statuses</option>
+                    <option value="">Todos los estados</option>
                     @foreach(['completed', 'pending', 'failed', 'refunded'] as $status)
                     <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
                     @endforeach
@@ -39,7 +39,7 @@
             </div>
             <div class="col-md-2"><input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}"></div>
             <div class="col-md-2"><input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}"></div>
-            <div class="col-md-2"><button class="btn btn-outline-primary w-100">Filter</button></div>
+            <div class="col-md-2"><button class="btn btn-outline-primary w-100">Filtrar</button></div>
         </form>
     </div>
 </div>
@@ -49,14 +49,14 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>Payment</th>
-                    <th>Invoice</th>
-                    <th>Guest</th>
+                    <th>Pago</th>
+                    <th>Factura</th>
+                    <th>Huésped</th>
                     <th>Method</th>
                     <th>Amount</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th class="text-end">Actions</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th class="text-end">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,7 +74,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="text-center py-5 text-muted">No payments found.</td></tr>
+                <tr><td colspan="8" class="text-center py-5 text-muted">No se encontraron pagos.</td></tr>
                 @endforelse
             </tbody>
         </table>

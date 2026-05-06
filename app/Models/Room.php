@@ -34,6 +34,8 @@ class Room extends Model
         'building',
         'price_per_night',
         'capacity',
+        'max_capacity',
+        'extra_person_price',
         'status',
         'room_status',
         'description',
@@ -45,7 +47,9 @@ class Room extends Model
 
     protected $casts = [
         'price_per_night' => 'decimal:2',
+        'extra_person_price' => 'decimal:2',
         'capacity' => 'integer',
+        'max_capacity' => 'integer',
         'is_active' => 'boolean',
         'is_smoking' => 'boolean',
         'has_balcony' => 'boolean',
@@ -57,6 +61,14 @@ class Room extends Model
     public function floor(): BelongsTo
     {
         return $this->belongsTo(Floor::class);
+    }
+
+    /**
+     * Get the floor record without colliding with the legacy floor attribute.
+     */
+    public function floorLevel(): BelongsTo
+    {
+        return $this->belongsTo(Floor::class, 'floor_id');
     }
 
     /**
@@ -152,5 +164,15 @@ class Room extends Model
     public function getFullNameAttribute(): string
     {
         return "{$this->room_number} - {$this->roomType->name}";
+    }
+
+    /**
+     * Calculate the per-night surcharge for guests above included capacity.
+     */
+    public function extraPersonChargeFor(int $guestCount): float
+    {
+        $extraGuests = max(0, $guestCount - (int) $this->capacity);
+
+        return $extraGuests * (float) $this->extra_person_price;
     }
 }

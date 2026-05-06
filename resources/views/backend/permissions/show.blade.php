@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Permission Details')
+@section('title', 'Detalles del permiso')
 
 @section('content')
 <div class="card border-0 shadow-sm mb-4">
@@ -12,12 +12,12 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white fw-semibold">Assigned Roles</div>
+    <div class="card-header bg-white fw-semibold">Roles asignados</div>
     <div class="list-group list-group-flush">
         @forelse($permission->roles as $role)
             <div class="list-group-item">{{ $role->name }}</div>
         @empty
-            <div class="list-group-item text-muted">No roles use this permission.</div>
+            <div class="list-group-item text-muted">Ningún rol usa este permiso.</div>
         @endforelse
     </div>
 </div>

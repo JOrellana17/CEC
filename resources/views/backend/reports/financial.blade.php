@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Financial Report')
+@section('title', 'Reporte financiero')
 
 @section('content')
 @include('backend.reports._filters')
@@ -19,12 +19,12 @@
 <div class="row g-4">
     <div class="col-12 col-lg-6">
         <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white fw-semibold">Payment Methods</div>
+            <div class="card-header bg-white fw-semibold">Métodos de pago</div>
             <div class="list-group list-group-flush">
                 @forelse($report['payment_methods'] as $method => $amount)
                     <div class="list-group-item d-flex justify-content-between"><span>{{ Str::headline($method) }}</span><strong>{{ config('app.currency_symbol', '$') }}{{ number_format($amount, 2) }}</strong></div>
                 @empty
-                    <div class="list-group-item text-muted">No payments in this range.</div>
+                    <div class="list-group-item text-muted">No hay pagos en este rango.</div>
                 @endforelse
             </div>
         </div>
@@ -36,7 +36,7 @@
                 @forelse($report['daily_revenue'] as $row)
                     <div class="list-group-item d-flex justify-content-between"><span>{{ $row->date }}</span><strong>{{ config('app.currency_symbol', '$') }}{{ number_format($row->total, 2) }}</strong></div>
                 @empty
-                    <div class="list-group-item text-muted">No daily revenue in this range.</div>
+                    <div class="list-group-item text-muted">No hay ingresos diarios en este rango.</div>
                 @endforelse
             </div>
         </div>
@@ -46,12 +46,12 @@
             <div class="card-header bg-white fw-semibold">Outstanding Balances</div>
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
-                    <thead><tr><th>Invoice</th><th>Guest</th><th>Status</th><th>Total</th><th>Paid</th><th>Due</th></tr></thead>
+                    <thead><tr><th>Factura</th><th>Huésped</th><th>Estado</th><th>Total</th><th>Pagado</th><th>Pendiente</th></tr></thead>
                     <tbody>
                     @forelse($report['outstanding_balances'] as $invoice)
                         <tr><td>{{ $invoice->invoice_number }}</td><td>{{ $invoice->guest?->full_name }}</td><td>{{ Str::headline($invoice->status) }}</td><td>{{ number_format($invoice->total_amount, 2) }}</td><td>{{ number_format($invoice->paid_amount, 2) }}</td><td class="fw-semibold">{{ number_format($invoice->due_amount, 2) }}</td></tr>
                     @empty
-                        <tr><td colspan="6" class="text-muted">No outstanding balances match these filters.</td></tr>
+                        <tr><td colspan="6" class="text-muted">No hay saldos pendientes que coincidan con estos filtros.</td></tr>
                     @endforelse
                     </tbody>
                 </table>

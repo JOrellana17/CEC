@@ -1,10 +1,10 @@
 @extends('layouts.backend')
 
-@section('title', 'Profile')
+@section('title', 'Perfil')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Dashboard</a></li>
-<li class="breadcrumb-item active">Profile</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
+<li class="breadcrumb-item active">Perfil</li>
 @endsection
 
 @section('content')
@@ -12,33 +12,33 @@
     <div class="col-lg-8">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h4 class="card-title mb-4">My Profile</h4>
+                <h4 class="card-title mb-4">Mi perfil</h4>
                 <form method="POST" action="{{ route('backend.users.update_profile') }}">
                     @csrf
                     @method('PATCH')
 
                     <div class="row gy-3">
                         <div class="col-md-6">
-                            <label class="form-label">Name</label>
+                            <label class="form-label">Nombre</label>
                             <input type="text" name="name" value="{{ old('name', $user->name) }}" class="form-control @error('name') is-invalid @enderror" required>
                             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">Correo electrónico</label>
                             <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-control @error('email') is-invalid @enderror" required>
                             @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Phone</label>
+                            <label class="form-label">Teléfono</label>
                             <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="form-control @error('phone') is-invalid @enderror">
                             @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                        <button type="submit" class="btn btn-primary">Guardar perfil</button>
                     </div>
                 </form>
             </div>
@@ -55,8 +55,8 @@
                 </div>
                 <h5>{{ $user->name }}</h5>
                 <p class="text-muted mb-1">{{ $user->email }}</p>
-                <p class="text-muted">Roles: {{ $user->roles->pluck('name')->map(fn($role) => ucfirst($role))->join(', ') ?: 'None' }}</p>
-                <a href="{{ route('backend.users.edit', $user->id) }}" class="btn btn-outline-primary btn-sm">Edit Account</a>
+                <p class="text-muted">Roles: {{ $user->roles->pluck('name')->map(fn($role) => ucfirst($role))->join(', ') ?: 'Ninguno' }}</p>
+                <a href="{{ route('backend.users.edit', $user->id) }}" class="btn btn-outline-primary btn-sm">Editar cuenta</a>
             </div>
         </div>
     </div>

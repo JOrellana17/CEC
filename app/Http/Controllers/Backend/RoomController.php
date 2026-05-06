@@ -35,7 +35,7 @@ class RoomController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Room::with(['floor', 'roomType']);
+        $query = Room::with(['floorLevel', 'roomType']);
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
@@ -81,6 +81,7 @@ class RoomController extends Controller
     public function store(StoreRoomRequest $request)
     {
         $validated = $request->validated();
+        $validated['extra_person_price'] = $validated['extra_person_price'] ?? 0;
 
         $room = Room::create($validated);
 
@@ -95,7 +96,7 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        $room->load(['floor', 'roomType', 'bookings.guest']);
+        $room->load(['floorLevel', 'roomType', 'bookings.guest']);
         $occupancyHistory = $room->bookings()
             ->where('booking_status', 'checked_out')
             ->orderBy('check_out_date', 'desc')
@@ -231,6 +232,8 @@ class RoomController extends Controller
                 'room_number' => $room->room_number,
                 'price_per_night' => $room->price_per_night,
                 'capacity' => $room->capacity,
+                'max_capacity' => $room->max_capacity ?? $room->capacity,
+                'extra_person_price' => $room->extra_person_price ?? 0,
             ]
         ]);
     }
