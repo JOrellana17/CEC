@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Reservation;
-use App\Models\Guest;
-use App\Models\Room;
 use App\Models\Floor;
+use App\Models\Guest;
+use App\Models\Reservation;
+use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,8 +18,11 @@ class ReservationFactory extends Factory
         $guest = Guest::inRandomOrder()->first() ?? Guest::create([
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'document_id' => $this->faker->unique()->numerify('ID-########'),
             'phone' => $this->faker->phoneNumber(),
+            'nationality' => $this->faker->country(),
+            'is_active' => true,
+            'status' => 'active',
         ]);
 
         $room = Room::inRandomOrder()->first() ?? $this->createFallbackRoom();
@@ -40,7 +43,7 @@ class ReservationFactory extends Factory
 
     private function createFallbackRoom(): Room
     {
-        $floor = Floor::first() ?? Floor::create(['name' => '1st Floor', 'number' => 1, 'description' => 'Default floor']);
+        $floor = Floor::first() ?? Floor::create(['name' => 'Cabana principal', 'number' => 1, 'description' => 'Default lodging group']);
         $roomType = RoomType::first() ?? RoomType::create([
             'name' => 'Standard',
             'slug' => 'standard',
@@ -55,10 +58,12 @@ class ReservationFactory extends Factory
             'room_number' => '100',
             'floor_id' => $floor->id,
             'room_type_id' => $roomType->id,
+            'capacity' => 2,
+            'max_capacity' => 2,
+            'price_per_night' => 100.00,
             'status' => 'available',
             'room_status' => 'clean',
             'is_active' => true,
         ]);
     }
-    }
-
+}

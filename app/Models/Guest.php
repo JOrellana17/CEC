@@ -16,22 +16,9 @@ class Guest extends Model
         'first_name',
         'last_name',
         'full_name',
-        'email',
         'phone',
-        'mobile',
-        'country',
         'nationality',
-        'state',
-        'city',
-        'address',
-        'postal_code',
-        'id_type',
-        'id_number',
         'document_id',
-        'date_of_birth',
-        'gender',
-        'company',
-        'tax_id',
         'notes',
         'incident_notes',
         'is_vip',
@@ -42,7 +29,6 @@ class Guest extends Model
     ];
 
     protected $casts = [
-        'date_of_birth' => 'date',
         'is_vip' => 'boolean',
         'is_frequent' => 'boolean',
         'is_blacklisted' => 'boolean',
@@ -84,11 +70,12 @@ class Guest extends Model
     /**
      * Get the full name of the guest.
      */
-    
     public function getFullNameAttribute(): string
     {
-        if ($this->full_name) {
-            return $this->full_name;
+        $fullName = $this->attributes['full_name'] ?? null;
+
+        if ($fullName) {
+            return $fullName;
         }
 
         return trim("{$this->first_name} {$this->last_name}");

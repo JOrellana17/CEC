@@ -38,14 +38,14 @@ class LoginController extends Controller
     {
         $this->ensureIsNotRateLimited($request);
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey($request), $this->decayMinutes * 60);
             $this->logLoginAttempt($request, false);
 
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials do not match our records.'],
+                'username' => ['The provided credentials do not match our records.'],
             ]);
         }
 
@@ -55,7 +55,7 @@ class LoginController extends Controller
             Auth::logout();
 
             throw ValidationException::withMessages([
-                'email' => ['Your account is currently inactive. Please contact the administrator.'],
+                'username' => ['Your account is currently inactive. Please contact the administrator.'],
             ]);
         }
 
@@ -96,19 +96,19 @@ class LoginController extends Controller
             $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
             throw ValidationException::withMessages([
-                'email' => ["Too many login attempts. Please try again in {$seconds} seconds."],
+                'username' => ["Too many login attempts. Please try again in {$seconds} seconds."],
             ]);
         }
     }
 
     protected function throttleKey(LoginRequest $request): string
     {
-        return Str::lower(Str::transliterate($request->input('email'))).'|'.$request->ip();
+        return Str::lower(Str::transliterate($request->input('username'))).'|'.$request->ip();
     }
 
     protected function logLoginAttempt(LoginRequest $request, bool $success): void
     {
-        $user = \App\Models\User::where('email', $request->input('email'))->first();
+        $user = \App\Models\User::where('username', $request->input('username'))->first();
 
         AuditLog::create([
             'user_id' => $user?->id,

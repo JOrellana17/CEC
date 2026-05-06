@@ -32,9 +32,9 @@
                                 @foreach($guests as $guest)
                                     <option value="{{ $guest->id }}"
                                             {{ old('guest_id', $reservation->guest_id) == $guest->id ? 'selected' : '' }}
-                                            data-email="{{ $guest->email }}"
+                                            data-document="{{ $guest->document_id }}"
                                             data-phone="{{ $guest->phone }}">
-                                        {{ $guest->full_name }} - {{ $guest->email }}
+                                        {{ $guest->full_name }} - {{ $guest->phone }}
                                     </option>
                                 @endforeach
                             </select>
@@ -48,7 +48,7 @@
                     <div id="guestDetalles" class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Correo electrónico</label>
-                            <input type="text" class="form-control" id="guestEmail" readonly>
+                            <input type="text" class="form-control" id="guestDocument" readonly>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Teléfono</label>
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize guest details
     if (guestSelect.value) {
         const selectedOption = guestSelect.options[guestSelect.selectedIndex];
-        document.getElementById('guestEmail').value = selectedOption.getAttribute('data-email') || '';
+        document.getElementById('guestDocument').value = selectedOption.getAttribute('data-document') || '';
         document.getElementById('guestPhone').value = selectedOption.getAttribute('data-phone') || '';
     }
 
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = this.options[this.selectedIndex];
 
         if (this.value) {
-            document.getElementById('guestEmail').value = selectedOption.getAttribute('data-email') || '';
+            document.getElementById('guestDocument').value = selectedOption.getAttribute('data-document') || '';
             document.getElementById('guestPhone').value = selectedOption.getAttribute('data-phone') || '';
         }
     });

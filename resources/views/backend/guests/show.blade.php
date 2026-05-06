@@ -1,52 +1,39 @@
 @extends('layouts.backend')
 
-@section('title', $guest->full_name ?? "{$guest->first_name} {$guest->last_name}")
+@section('title', $guest->full_name)
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
-<li class="breadcrumb-item"><a href="{{ route('backend.guests.index') }}">Huéspedes</a></li>
-<li class="breadcrumb-item active">{{ $guest->full_name ?? "{$guest->first_name} {$guest->last_name}" }}</li>
+<li class="breadcrumb-item"><a href="{{ route('backend.guests.index') }}">Huespedes</a></li>
+<li class="breadcrumb-item active">{{ $guest->full_name }}</li>
 @endsection
 
 @section('content')
 <div class="row">
-    <!-- Información del huésped -->
     <div class="col-md-8">
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-title d-flex align-items-center">
                     <i class="fas fa-user-circle me-2"></i>
-                    {{ $guest->full_name ?? "{$guest->first_name} {$guest->last_name}" }}
+                    {{ $guest->full_name }}
                 </h5>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Email:</strong><br>
-                        <a href="mailto:{{ $guest->email }}">{{ $guest->email }}</a>
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Phone:</strong><br>
+                        <strong>Telefono:</strong><br>
                         {{ $guest->phone }}
                     </div>
-                </div>
-
-                <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Document ID:</strong><br>
+                        <strong>Numero de identidad:</strong><br>
                         {{ $guest->document_id }}
                     </div>
-                    <div class="col-md-6">
-                        <strong>Nationality:</strong><br>
-                        {{ $guest->nationality }}
-                    </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Address:</strong><br>
-                        {{ $guest->address ?? 'N/A' }}<br>
-                        {{ $guest->city }}, {{ $guest->state }} {{ $guest->postal_code }}
+                        <strong>Nacionalidad:</strong><br>
+                        {{ $guest->nationality }}
                     </div>
                     <div class="col-md-6">
                         <strong>Estado:</strong><br>
@@ -56,53 +43,55 @@
                             <span class="badge bg-secondary">Inactivo</span>
                         @endif
                         @if ($guest->deleted_at)
-                            <span class="badge bg-danger">Soft Eliminard</span>
+                            <span class="badge bg-danger">Eliminado</span>
                         @endif
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <strong>Flags:</strong><br>
+                        <strong>Alertas:</strong><br>
                         @if ($guest->is_vip)
                             <span class="badge bg-warning text-dark"><i class="fas fa-star me-1"></i>VIP</span>
                         @endif
                         @if ($guest->is_frequent)
-                            <span class="badge bg-info"><i class="fas fa-heart me-1"></i>Huésped frecuente</span>
+                            <span class="badge bg-info"><i class="fas fa-heart me-1"></i>Huesped frecuente</span>
                         @endif
                         @if ($guest->is_blacklisted)
-                            <span class="badge bg-danger"><i class="fas fa-ban me-1"></i>Lista negraed</span>
+                            <span class="badge bg-danger"><i class="fas fa-ban me-1"></i>Lista negra</span>
                         @endif
+                        @unless($guest->is_vip || $guest->is_frequent || $guest->is_blacklisted)
+                            <span class="text-muted">Sin alertas</span>
+                        @endunless
                     </div>
                 </div>
 
                 @if ($guest->incident_notes)
                     <div class="mt-3 p-3 bg-warning-light border border-warning rounded">
-                        <strong><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Incident Notes:</strong><br>
-                        {!! nl2br($guest->incident_notes) !!}
+                        <strong><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Notas de incidentes:</strong><br>
+                        {!! nl2br(e($guest->incident_notes)) !!}
                     </div>
                 @endif
 
                 @if ($guest->notes)
                     <div class="mt-3 p-3 bg-light border rounded">
-                        <strong><i class="fas fa-sticky-note me-2"></i>Notes:</strong><br>
-                        {!! nl2br($guest->notes) !!}
+                        <strong><i class="fas fa-sticky-note me-2"></i>Notas:</strong><br>
+                        {!! nl2br(e($guest->notes)) !!}
                     </div>
                 @endif
             </div>
         </div>
 
-        <!-- Historial de reservaciones -->
         @if ($guest->bookings->count() > 0)
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i>Historial de reservaciones</h5>
+                    <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i>Historial de reservas</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Habitación</th>
+                                <th>Alojamiento</th>
                                 <th>Check In</th>
                                 <th>Check Out</th>
                                 <th>Estado</th>
@@ -116,9 +105,7 @@
                                     <td>{{ $booking->room->room_number }}</td>
                                     <td>{{ $booking->check_in_date->format('M d, Y') }}</td>
                                     <td>{{ $booking->check_out_date->format('M d, Y') }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ ucfirst($booking->booking_status) }}</span>
-                                    </td>
+                                    <td><span class="badge bg-info">{{ ucfirst($booking->booking_status) }}</span></td>
                                     <td>${{ number_format($booking->total_amount, 2) }}</td>
                                     <td>
                                         <a href="{{ route('backend.bookings.show', $booking) }}" class="btn btn-sm btn-outline-primary">
@@ -133,7 +120,6 @@
             </div>
         @endif
 
-        <!-- Invoices -->
         @if ($guest->invoices->count() > 0)
             <div class="card">
                 <div class="card-header">
@@ -145,7 +131,7 @@
                             <tr>
                                 <th>Factura #</th>
                                 <th>Fecha</th>
-                                <th>Amount</th>
+                                <th>Monto</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -175,12 +161,10 @@
         @endif
     </div>
 
-    <!-- Sidebar -->
     <div class="col-md-4">
-        <!-- Statistics -->
         <div class="card mb-4">
             <div class="card-header">
-                <h6 class="card-title"><i class="fas fa-chart-bar me-2"></i>Estadísticas</h6>
+                <h6 class="card-title"><i class="fas fa-chart-bar me-2"></i>Estadisticas</h6>
             </div>
             <div class="card-body">
                 <div class="mb-3">
@@ -196,13 +180,12 @@
                     <div class="h4">${{ number_format($guest->invoices->sum('total_amount'), 2) }}</div>
                 </div>
                 <div>
-                    <div class="text-muted small">Member Since</div>
+                    <div class="text-muted small">Registrado desde</div>
                     <div>{{ $guest->created_at->format('M d, Y') }}</div>
                 </div>
             </div>
         </div>
 
-        <!-- Actions -->
         <div class="card">
             <div class="card-header">
                 <h6 class="card-title">Acciones</h6>
@@ -220,23 +203,13 @@
                             {{ $guest->is_active ? 'Desactivar' : 'Activar' }}
                         </button>
                     </form>
-                    @if (!$guest->is_blacklisted)
-                        <form method="POST" action="{{ route('backend.guests.toggle_blacklist', $guest) }}" style="display: inline;">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="btn btn-danger w-100">
-                                <i class="fas fa-ban me-2"></i>Agregar a lista negra
-                            </button>
-                        </form>
-                    @else
-                        <form method="POST" action="{{ route('backend.guests.toggle_blacklist', $guest) }}" style="display: inline;">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="btn btn-info w-100">
-                                <i class="fas fa-check me-2"></i>Quitar de lista negra
-                            </button>
-                        </form>
-                    @endif
+                    <form method="POST" action="{{ route('backend.guests.toggle_blacklist', $guest) }}" style="display: inline;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn {{ $guest->is_blacklisted ? 'btn-info' : 'btn-danger' }} w-100">
+                            <i class="fas fa-ban me-2"></i>{{ $guest->is_blacklisted ? 'Quitar de lista negra' : 'Agregar a lista negra' }}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

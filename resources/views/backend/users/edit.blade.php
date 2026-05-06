@@ -25,13 +25,13 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Correo electrónico</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-control @error('email') is-invalid @enderror" required>
-                    @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <label class="form-label">Usuario</label>
+                    <input type="text" name="username" value="{{ old('username', $user->username) }}" class="form-control @error('username') is-invalid @enderror" required>
+                    @error('username')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Teléfono</label>
+                    <label class="form-label">Telefono</label>
                     <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="form-control @error('phone') is-invalid @enderror">
                     @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>

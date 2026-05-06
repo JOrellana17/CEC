@@ -142,8 +142,9 @@ class ICalendarService
                     [
                         'first_name' => Str::before($event['guest_name'], ' ') ?: $event['guest_name'],
                         'last_name' => Str::after($event['guest_name'], ' ') ?: '',
-                        'email' => null,
                         'phone' => 'Imported',
+                        'document_id' => 'ICAL-'.Str::upper(Str::random(10)),
+                        'nationality' => 'Imported',
                         'is_active' => true,
                         'status' => 'active',
                     ]
@@ -229,7 +230,6 @@ class ICalendarService
     {
         return implode("\n", [
             "Guest: {$reservation->guest->full_name}",
-            "Email: {$reservation->guest->email}",
             "Phone: {$reservation->guest->phone}",
             "Room: {$reservation->room->room_number}",
             'Room Type: '.($reservation->room->roomType?->name ?? ''),

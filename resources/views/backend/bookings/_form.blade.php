@@ -9,7 +9,7 @@
         <select class="form-select" name="guest_id" required>
             <option value="">Seleccione un huésped</option>
             @foreach($guests as $guest)
-                <option value="{{ $guest->id }}" @selected(old('guest_id', $booking->guest_id ?? '') == $guest->id)>{{ $guest->full_name }} - {{ $guest->email }}</option>
+                <option value="{{ $guest->id }}" @selected(old('guest_id', $booking->guest_id ?? '') == $guest->id)>{{ $guest->full_name }} - {{ $guest->phone }}</option>
             @endforeach
         </select>
     </div>

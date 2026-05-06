@@ -18,13 +18,13 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @property int $id
  * @property string $name
- * @property string $email
+ * @property string $username
  * @property string|null $avatar
  * @property bool $is_active
  * @property int|null $role_id
  * @property string $status
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'username', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -38,7 +38,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'username',
         'password',
         'phone',
         'avatar',
@@ -55,7 +55,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
         ];
@@ -125,6 +124,10 @@ class User extends Authenticatable
      */
     public function hasPermission(string $permission): bool
     {
+        if ($this->hasRole('admin')) {
+            return true;
+        }
+
         if ($this->roles()->whereHas('permissions', function ($query) use ($permission) {
             $query->where('name', $permission)
                 ->orWhere('slug', $permission);

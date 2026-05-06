@@ -97,7 +97,7 @@
                         <td>
                             <div>
                                 <strong>{{ $booking->guest->full_name }}</strong><br>
-                                <small class="text-muted">{{ $booking->guest->email }}</small>
+                                <small class="text-muted">{{ $booking->guest->phone }}</small>
                             </div>
                         </td>
                         <td>

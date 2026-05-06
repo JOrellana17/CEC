@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', 'Gestión de usuarios')
+@section('title', 'Gestion de usuarios')
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Panel de control</a></li>
@@ -11,7 +11,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4>Usuarios</h4>
-        <p class="text-muted mb-0">Administre cuentas, roles y accesos del personal del hotel.</p>
+        <p class="text-muted mb-0">Administre cuentas, roles y accesos del personal.</p>
     </div>
     <a href="{{ route('backend.users.create') }}" class="btn btn-primary">
         <i class="bi bi-person-plus"></i> Crear usuario
@@ -20,7 +20,7 @@
 
 <form method="GET" class="row gx-2 gy-3 mb-4">
     <div class="col-md-4">
-        <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Buscar por nombre, correo o teléfono">
+        <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Buscar por nombre, usuario o telefono">
     </div>
     <div class="col-md-3">
         <select name="role" class="form-select">
@@ -50,10 +50,10 @@
             <thead class="table-light">
                 <tr>
                     <th>Nombre</th>
-                    <th>Correo electrónico</th>
+                    <th>Usuario</th>
                     <th>Rol</th>
                     <th>Estado</th>
-                    <th>Última actividad</th>
+                    <th>Ultima actividad</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -61,7 +61,7 @@
                 @forelse($users as $user)
                 <tr>
                     <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->username }}</td>
                     <td>{{ $user->roles->pluck('name')->map(fn($name) => ucfirst($name))->join(', ') ?: 'N/A' }}</td>
                     <td>
                         <span class="badge bg-{{ $user->status === 'active' ? 'success' : 'secondary' }}">
@@ -74,7 +74,7 @@
                             Ver
                         </a>
                         <a href="{{ route('backend.users.edit', $user->id) }}" class="btn btn-sm btn-outline-secondary">
-                            Editarar
+                            Editar
                         </a>
                     </td>
                 </tr>

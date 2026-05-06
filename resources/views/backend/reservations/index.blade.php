@@ -103,7 +103,7 @@
                                     <div class="d-flex align-items-center">
                                         <div>
                                             <div class="fw-bold">{{ $reservation->guest->full_name }}</div>
-                                            <small class="text-muted">{{ $reservation->guest->email }}</small>
+                                            <small class="text-muted">{{ $reservation->guest->phone }}</small>
                                         </div>
                                     </div>
                                 </td>

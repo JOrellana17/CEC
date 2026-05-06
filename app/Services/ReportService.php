@@ -181,7 +181,7 @@ class ReportService
             ]),
             'statistical' => collect($report['most_frequent_guests'])->map(fn (Guest $guest) => [
                 'Guest' => $guest->full_name,
-                'Email' => $guest->email,
+                'Phone' => $guest->phone,
                 'Reservations' => $guest->reservations_count,
                 'Completed Payments' => $guest->completed_payment_sum ?? 0,
             ]),

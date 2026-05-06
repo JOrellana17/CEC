@@ -99,7 +99,6 @@ Route::middleware(['auth', 'sanitize.input', 'backend.authorize'])->prefix('back
     Route::patch('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark_paid');
     Route::patch('invoices/{invoice}/cancel', [InvoiceController::class, 'cancel'])->name('invoices.cancel');
     Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'generatePdf'])->name('invoices.pdf');
-    Route::post('invoices/{invoice}/email', [InvoiceController::class, 'emailInvoice'])->name('invoices.email');
 
     // Payments
     Route::get('payments/summary', [PaymentController::class, 'summary'])->name('payments.summary');

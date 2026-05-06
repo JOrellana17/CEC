@@ -19,7 +19,7 @@
                     <thead><tr><th>Huésped</th><th>Reservaciones</th><th>Spent</th></tr></thead>
                     <tbody>
                     @forelse($report['most_frequent_guests'] as $guest)
-                        <tr><td>{{ $guest->full_name }}<div class="small text-muted">{{ $guest->email }}</div></td><td>{{ $guest->reservations_count }}</td><td>{{ config('app.currency_symbol', '$') }}{{ number_format($guest->completed_payment_sum ?? 0, 2) }}</td></tr>
+                        <tr><td>{{ $guest->full_name }}<div class="small text-muted">{{ $guest->phone }}</div></td><td>{{ $guest->reservations_count }}</td><td>{{ config('app.currency_symbol', '$') }}{{ number_format($guest->completed_payment_sum ?? 0, 2) }}</td></tr>
                     @empty
                         <tr><td colspan="3" class="text-muted">Sin huésped activity in this range.</td></tr>
                     @endforelse

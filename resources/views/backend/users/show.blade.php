@@ -16,7 +16,7 @@
                 <div class="d-flex justify-content-between align-items-start mb-4">
                     <div>
                         <h4 class="card-title">{{ $user->name }}</h4>
-                        <p class="text-muted mb-0">{{ $user->email }}</p>
+                        <p class="text-muted mb-0">{{ $user->username }}</p>
                     </div>
                     <div>
                         <span class="badge bg-{{ $user->status === 'active' ? 'success' : 'secondary' }}">
@@ -31,8 +31,8 @@
                         <p>{{ $user->roles->pluck('name')->map(fn($name) => ucfirst($name))->join(', ') ?: 'Ninguno' }}</p>
                     </div>
                     <div class="col-sm-6">
-                        <strong>Teléfono</strong>
-                        <p>{{ $user->phone ?: '—' }}</p>
+                        <strong>Telefono</strong>
+                        <p>{{ $user->phone ?: '-' }}</p>
                     </div>
                 </div>
 
@@ -42,7 +42,7 @@
                         <p>{{ $user->created_at->format('M d, Y H:i') }}</p>
                     </div>
                     <div class="col-sm-6">
-                        <strong>Última actualización</strong>
+                        <strong>Ultima actualizacion</strong>
                         <p>{{ $user->updated_at->format('M d, Y H:i') }}</p>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                     <form action="{{ route('backend.users.reset_password', $user->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-warning">Restablecer contraseña</button>
+                        <button type="submit" class="btn btn-warning">Restablecer contrasena</button>
                     </form>
                     <form action="{{ route('backend.users.toggle_status', $user->id) }}" method="POST" class="d-inline">
                         @csrf
@@ -69,7 +69,7 @@
     <div class="col-lg-5">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h5 class="card-title mb-4">Detalles de auditoría</h5>
+                <h5 class="card-title mb-4">Detalles de auditoria</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <strong>Permisos</strong>

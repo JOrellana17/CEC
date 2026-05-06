@@ -41,7 +41,6 @@ class GuestController extends Controller
                 $q->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('full_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('document_id', 'like', "%{$search}%");
             });
@@ -82,6 +81,10 @@ class GuestController extends Controller
     public function store(StoreGuestRequest $request)
     {
         $validated = $request->validated();
+        $validated['is_vip'] = $request->boolean('is_vip');
+        $validated['is_frequent'] = $request->boolean('is_frequent');
+        $validated['is_blacklisted'] = $request->boolean('is_blacklisted');
+        $validated['is_active'] = ($validated['status'] ?? 'active') === 'active';
 
         $guest = Guest::create($validated);
 
@@ -114,6 +117,10 @@ class GuestController extends Controller
     public function update(UpdateGuestRequest $request, Guest $guest)
     {
         $validated = $request->validated();
+        $validated['is_vip'] = $request->boolean('is_vip');
+        $validated['is_frequent'] = $request->boolean('is_frequent');
+        $validated['is_blacklisted'] = $request->boolean('is_blacklisted');
+        $validated['is_active'] = ($validated['status'] ?? 'active') === 'active';
         $oldValues = $guest->only(array_keys($validated));
 
         $guest->update($validated);
@@ -223,14 +230,13 @@ class GuestController extends Controller
             $query->where('first_name', 'like', "%{$term}%")
                 ->orWhere('last_name', 'like', "%{$term}%")
                 ->orWhere('full_name', 'like', "%{$term}%")
-                ->orWhere('email', 'like', "%{$term}%")
                 ->orWhere('phone', 'like', "%{$term}%")
                 ->orWhere('document_id', 'like', "%{$term}%");
         })
         ->where('is_active', true)
         ->where('is_blacklisted', false)
         ->limit(10)
-        ->get(['id', 'first_name', 'last_name', 'full_name', 'email', 'phone', 'document_id']);
+        ->get(['id', 'first_name', 'last_name', 'full_name', 'phone', 'document_id', 'nationality']);
 
         return response()->json($guests);
     }

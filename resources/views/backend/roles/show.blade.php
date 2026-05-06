@@ -35,7 +35,7 @@
             <div class="card-header bg-white fw-semibold">Usuarios</div>
             <div class="list-group list-group-flush">
                 @forelse($role->users as $user)
-                    <div class="list-group-item">{{ $user->name }} <span class="text-muted">{{ $user->email }}</span></div>
+                    <div class="list-group-item">{{ $user->name }} <span class="text-muted">{{ $user->username }}</span></div>
                 @empty
                     <div class="list-group-item text-muted">No hay usuarios asignados.</div>
                 @endforelse

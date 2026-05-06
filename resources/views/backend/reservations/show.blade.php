@@ -36,7 +36,7 @@
                         <a href="{{ route('backend.guests.show', $reservation->guest) }}" class="text-decoration-none">
                             {{ $reservation->guest->full_name }}
                         </a>
-                        <br><small class="text-muted">{{ $reservation->guest->email }}</small>
+                        <br><small class="text-muted">{{ $reservation->guest->phone }}</small>
                         @if($reservation->guest->phone)
                             <br><small class="text-muted">{{ $reservation->guest->phone }}</small>
                         @endif

@@ -35,7 +35,7 @@ class UserController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('email', 'like', '%' . $request->search . '%')
+                    ->orWhere('username', 'like', '%' . $request->search . '%')
                     ->orWhere('phone', 'like', '%' . $request->search . '%');
             });
         }
@@ -64,7 +64,7 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            'username' => $validated['username'],
             'phone' => $validated['phone'] ?? null,
             'password' => $validated['password'],
             'status' => $validated['status'],
@@ -79,7 +79,7 @@ class UserController extends Controller
             }
         }
 
-        $this->logAudit($user, 'create', 'Created a new user account.', [], $user->only(['name', 'email', 'phone', 'status', 'role_id']));
+        $this->logAudit($user, 'create', 'Created a new user account.', [], $user->only(['name', 'username', 'phone', 'status', 'role_id']));
 
         return redirect()->route('backend.users.show', $user->id)
             ->with('success', 'User created successfully.');
@@ -112,11 +112,11 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $validated = $request->validated();
-        $oldValues = $user->only(['name', 'email', 'phone', 'status', 'role_id']);
+        $oldValues = $user->only(['name', 'username', 'phone', 'status', 'role_id']);
 
         $user->update([
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            'username' => $validated['username'],
             'phone' => $validated['phone'] ?? null,
             'status' => $validated['status'],
             'is_active' => $validated['status'] === 'active',
@@ -130,7 +130,7 @@ class UserController extends Controller
             }
         }
 
-        $this->logAudit($user, 'update', 'Updated user account.', $oldValues, $user->only(['name', 'email', 'phone', 'status', 'role_id']));
+        $this->logAudit($user, 'update', 'Updated user account.', $oldValues, $user->only(['name', 'username', 'phone', 'status', 'role_id']));
 
         return redirect()->route('backend.users.show', $user->id)
             ->with('success', 'User updated successfully.');
@@ -287,11 +287,11 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $validated = $request->validated();
-        $oldValues = $user->only(['name', 'email', 'phone']);
+        $oldValues = $user->only(['name', 'username', 'phone']);
 
         $user->update($validated);
 
-        $this->logAudit($user, 'profile_update', 'Updated own profile.', $oldValues, $user->only(['name', 'email', 'phone']));
+        $this->logAudit($user, 'profile_update', 'Updated own profile.', $oldValues, $user->only(['name', 'username', 'phone']));
 
         return back()->with('success', 'Profile updated successfully.');
     }

@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Inicio de sesión | Cabañas el Capitán')
+@section('title', 'Inicio de sesion | Cabanas el Capitan')
 
 @section('content')
 <div class="d-flex justify-content-center align-items-center vh-100">
@@ -13,24 +13,24 @@
                             CE
                         </span>
                     </div>
-                    <h2 class="h4 mb-1">Cabañas el Capitán</h2>
-                    <p class="text-muted">Portal de inicio de sesión del personal del hotel</p>
+                    <h2 class="h4 mb-1">Cabanas el Capitan</h2>
+                    <p class="text-muted">Portal de inicio de sesion del personal</p>
                 </div>
 
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Correo electrónico</label>
-                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                               name="email" value="{{ old('email') }}" required autofocus>
-                        @error('email')
+                        <label for="username" class="form-label">Usuario</label>
+                        <input id="username" type="text" class="form-control @error('username') is-invalid @enderror"
+                               name="username" value="{{ old('username') }}" required autofocus>
+                        @error('username')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
+                        <label for="password" class="form-label">Contrasena</label>
                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                                name="password" required>
                         @error('password')
@@ -45,13 +45,13 @@
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Iniciar Sesión</button>
+                        <button type="submit" class="btn btn-primary btn-lg">Iniciar sesion</button>
                     </div>
                 </form>
 
                 <div class="mt-4 text-center text-muted small">
-                    <p class="mb-1">Bloqueo automático después de 5 intentos fallidos de inicio de sesión.</p>
-                    <p class="mb-0">Use sus credenciales del hotel para acceder al sistema.</p>
+                    <p class="mb-1">Bloqueo automatico despues de 5 intentos fallidos.</p>
+                    <p class="mb-0">Use su usuario del sistema para acceder.</p>
                 </div>
             </div>
         </div>

@@ -168,16 +168,17 @@
                     </ul>
                 </div>
             </nav>
+            <div id="sidebarBackdrop" class="sidebar-backdrop d-md-none"></div>
 
             <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-3 px-md-4">
                 <!-- Header -->
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">@yield('title', 'Panel de Control')</h1>
 
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="sidebarToggle">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="sidebarToggle" aria-label="Alternar menú lateral" aria-expanded="false">
                                 <i class="bi bi-list"></i>
                             </button>
                         </div>

@@ -18,8 +18,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    const updateSidebarAria = () => {
+        if (sidebarToggle) {
+            sidebarToggle.setAttribute('aria-expanded', sidebar?.classList.contains('show') ? 'true' : 'false');
+        }
+    };
+
+    const toggleSidebar = () => {
+        sidebar.classList.toggle('show');
+        sidebarBackdrop?.classList.toggle('show');
+        document.body.classList.toggle('sidebar-open');
+        updateSidebarAria();
+    };
 
     if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('show'));
+        updateSidebarAria();
+        sidebarToggle.addEventListener('click', toggleSidebar);
     }
+
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', toggleSidebar);
+    }
+
+    document.querySelectorAll('#sidebar .nav-link').forEach((link) => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth < 768 && sidebar.classList.contains('show')) {
+                toggleSidebar();
+            }
+        });
+    });
 });

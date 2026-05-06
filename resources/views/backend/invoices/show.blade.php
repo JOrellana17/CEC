@@ -18,12 +18,6 @@
         <a href="{{ route('backend.invoices.pdf', $invoice) }}" class="btn btn-outline-dark">
             <i class="bi bi-file-earmark-pdf"></i> PDF
         </a>
-        <form method="POST" action="{{ route('backend.invoices.email', $invoice) }}" class="d-inline">
-            @csrf
-            <button class="btn btn-outline-secondary">
-                <i class="bi bi-envelope"></i> Email
-            </button>
-        </form>
         @if($invoice->status !== 'paid')
         <a href="{{ route('backend.payments.create', ['invoice_id' => $invoice->id]) }}" class="btn btn-outline-success">
             <i class="bi bi-cash"></i> Registrar pago

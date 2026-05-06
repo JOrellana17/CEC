@@ -11,7 +11,6 @@ use App\Services\BillingService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
@@ -240,25 +239,4 @@ class InvoiceController extends Controller
         return $pdf->download('invoice-' . $invoice->invoice_number . '.pdf');
     }
 
-    public function emailInvoice(Invoice $invoice)
-    {
-        $invoice->load(['guest', 'booking.room', 'reservation.room', 'reservation.services.service', 'payments']);
-
-        if (! $invoice->guest?->email) {
-            return back()->with('error', 'Guest does not have an email address.');
-        }
-
-        $pdf = Pdf::loadView('backend.invoices.pdf', compact('invoice'));
-
-        Mail::send([], [], function ($message) use ($invoice, $pdf) {
-            $message->to($invoice->guest->email, $invoice->guest->full_name)
-                ->subject('Invoice '.$invoice->invoice_number)
-                ->html('Please find your invoice attached.')
-                ->attachData($pdf->output(), 'invoice-'.$invoice->invoice_number.'.pdf', [
-                    'mime' => 'application/pdf',
-                ]);
-        });
-
-        return back()->with('success', 'Invoice emailed successfully.');
-    }
 }
